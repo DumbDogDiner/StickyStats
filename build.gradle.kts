@@ -1,9 +1,7 @@
 import kr.entree.spigradle.kotlin.papermc
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
-    kotlin("jvm") version "1.4.10"
     id("com.diffplug.spotless") version "5.8.2"
     id("kr.entree.spigradle") version "2.2.3"
 }
@@ -26,7 +24,6 @@ subprojects {
     group = "com.dumbdogdiner.myawesomeplugin"
 
     apply(plugin = "java")
-    apply(plugin = "kotlin")
     apply(plugin = "kr.entree.spigradle")
 
     // Spotless configuration
@@ -43,10 +40,6 @@ subprojects {
     tasks.withType<JavaCompile> {
         targetCompatibility = JavaVersion.VERSION_11.toString()
         sourceCompatibility = JavaVersion.VERSION_11.toString()
-    }
-
-    tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
     }
 }
 

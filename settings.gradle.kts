@@ -1,6 +1,6 @@
-rootProject.name = "myawesomeplugin"
+rootProject.name = "sass"
 
-include(":api")
-include(":bukkit")
-// can also support bungee plugins. you will have to remove all references to bukkit code in your api.
-// include(":bungee")
+include(":stats-api")
+include(":stats-plugin")
+include(":reward-api")
+include(":reward-plugin")
