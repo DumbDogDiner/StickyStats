@@ -1,3 +1,4 @@
-# plugin-base
+# Sass: Awesome Statistics Scrubber
 
-Generic plugin base using a Java API, and a Kotlin implementation.
+Records statistics for Minecraft players, and distributes sexy awards accordingly.
+
