@@ -6,7 +6,11 @@ plugins {
 }
 
 dependencies {
+    // runtime dependencies
     compileOnly(paper())
+    // utility dependencies
+    implementation("org.projectlombok:lombok:1.18.18")
+    annotationProcessor("org.projectlombok:lombok:1.18.18")
     implementation("org.jetbrains:annotations:16.0.2")
 }
 

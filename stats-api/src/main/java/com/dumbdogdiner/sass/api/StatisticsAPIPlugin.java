@@ -1,12 +1,12 @@
 package com.dumbdogdiner.sass.api;
 
+import com.dumbdogdiner.sass.api.exception.InvalidServiceException;
+import com.dumbdogdiner.sass.api.store.Store;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 
 public interface StatisticsAPIPlugin {
 	/**
@@ -27,7 +27,7 @@ public interface StatisticsAPIPlugin {
 		var provider = Bukkit.getServicesManager().getRegistration(StatisticsAPIPlugin.class);
 		// just in case someone tries something wacky.
 		if (provider == null) {
-			throw new RuntimeException("Failed to fetch the statistics API - registration is invalid!");
+			throw new InvalidServiceException(null);
 		}
 		return provider.getProvider();
 	}
@@ -52,4 +52,9 @@ public interface StatisticsAPIPlugin {
 		// register as normal
 		this.registerField(plugin, params);
 	}
+
+	/**
+	 * @return The statistics store attached to this plugin instance.
+	 */
+	Store getStore();
 }
