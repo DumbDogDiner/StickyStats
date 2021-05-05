@@ -11,7 +11,7 @@ public interface StatisticsEventHandler<T> {
     StatisticsEventType<T> getEventType();
 
     /**
-     * Execute this event.
+     * Execute this event handler.
      * @param ctx The data associated with this event.
      */
     void execute(T ctx);
