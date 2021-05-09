@@ -1,9 +1,9 @@
 package com.dumbdogdiner.sass.api.store.statistic;
 
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a statistic.
@@ -30,19 +30,19 @@ public interface Statistic<K, V> {
     /**
      * @return A set of all of the entries in this statistic.
      */
-    @Nonnull
+    @NotNull
     Set<Entry<K, V>> getAll();
 
     /**
      * @return The plugin this statistic belongs to.
      */
-    @Nonnull
+    @NotNull
     JavaPlugin getPlugin();
 
     /**
      * @return The identifier of this statistic.
      */
-    @Nonnull
+    @NotNull
     String getIdentifier();
 
     /**
@@ -52,13 +52,13 @@ public interface Statistic<K, V> {
         /**
          * @return The group of this statistic entry.
          */
-        @Nonnull
+        @NotNull
         K getGroup();
 
         /**
          * @return The value of this statistic entry.
          */
-        @Nonnull
+        @NotNull
         V getValue();
     }
 }
