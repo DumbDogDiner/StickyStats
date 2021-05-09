@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
 	compileOnly(paper())
+	implementation(project(":reward-api"))
 }
 
 tasks {
