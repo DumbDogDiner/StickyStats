@@ -1,32 +1,19 @@
 package com.dumbdogdiner.sass.api.store;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents the root statistic store.
  */
-public interface Store extends Node {
-	default String getFullIdentifier() {
-		return "root";
+public interface Store extends Node<PluginNode> {
+	default @NotNull String getFullIdentifier() {
+		// don't check the parent as we don't have one
+		return this.getIdentifier();
 	}
 
 	@Override
-	default Node getParent() {
+	default @NotNull Node<?> getParent() {
 		// this is annoying but it makes it easier for nodes
-		throw new IllegalStateException("Cannot access the parent node of the root node!");
-	}
-
-	/**
-	 * @return A list of plugin nodes contained within this store.
-	 */
-	default List<PluginNode> getPluginNodes() {
-		List<PluginNode> list = new ArrayList<>();
-		for (Node t : this.getChildren()) {
-			if (t instanceof PluginNode) {
-				list.add((PluginNode) t);
-			}
-		}
-		return list;
+		 throw new IllegalStateException("Cannot access the parent node of the root node!");
 	}
 }

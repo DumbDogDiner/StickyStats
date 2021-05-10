@@ -1,64 +1,19 @@
 package com.dumbdogdiner.sass.api.store.statistic;
 
-import java.util.Set;
-import org.bukkit.plugin.java.JavaPlugin;
+import java.util.UUID;
+
+import com.dumbdogdiner.sass.api.store.NeverNode;
+import com.dumbdogdiner.sass.api.store.Node;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a statistic.
- * @param <K> The type of object that groups this statistic, or the key
- * @param <V> The type of values of this statistic
+ * Represents a terminal node containing a statistic.
+ * @param <T> The type of statistic this node contains.
  */
-public interface Statistic<K, V> {
+public interface Statistic<T> extends Node<NeverNode> {
     /**
-     * @param group The group to find a value for
-     * @return The value for this statistic for the given group, or null if
-     * this group has no value for this statistic.
+     * @param playerId The {@link UUID} of the player.
+     * @return The value of the statistic for a player, or the initial value if it does not exist.
      */
-    @Nullable
-    V get(K group);
-
-    /**
-     * @return True if this statistic has a value for this group, false
-     * otherwise.
-     */
-    default boolean contains(K group) {
-        return get(group) != null;
-    }
-
-    /**
-     * @return A set of all of the entries in this statistic.
-     */
-    @NotNull
-    Set<Entry<K, V>> getAll();
-
-    /**
-     * @return The plugin this statistic belongs to.
-     */
-    @NotNull
-    JavaPlugin getPlugin();
-
-    /**
-     * @return The identifier of this statistic.
-     */
-    @NotNull
-    String getIdentifier();
-
-    /**
-     * Represents an entry in a statistic.
-     */
-    interface Entry<K, V> {
-        /**
-         * @return The group of this statistic entry.
-         */
-        @NotNull
-        K getGroup();
-
-        /**
-         * @return The value of this statistic entry.
-         */
-        @NotNull
-        V getValue();
-    }
+    @NotNull T get(@NotNull UUID playerId);
 }

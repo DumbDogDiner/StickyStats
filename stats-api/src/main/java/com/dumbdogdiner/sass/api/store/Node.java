@@ -1,52 +1,58 @@
 package com.dumbdogdiner.sass.api.store;
 
-import com.dumbdogdiner.sass.api.store.field.Field;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a statistics node.
+ * Represents an node in the database with an identifier, a plugin it belongs to, and potentially child nodes.
+ * @param <T> The type of child nodes this node can contain.
  */
-public interface Node {
+public interface Node<T extends Node<?>> {
 	/**
 	 * @return The identifier of this node.
 	 */
-	String getIdentifier();
+	@NotNull String getIdentifier();
 
 	/**
 	 * @return The full, unique identifier of this node.
 	 */
-	default String getFullIdentifier() {
+	default @NotNull String getFullIdentifier() {
 		// recursively ascend through the node tree and append identifiers.
 		return this.getParent().getFullIdentifier() + "." + this.getIdentifier();
 	}
 
 	/**
-	 * @return The parent node of this
+	 * @return The plugin that created this node.
+	 */
+	@NotNull JavaPlugin getPlugin();
+
+	/**
+	 * @return The parent node of this node.
  	 */
-	Node getParent();
+	@NotNull Node<?> getParent();
 
 	/**
 	 * @return The child nodes attached to this node.
 	 */
-	List<Node> getChildren();
+	@NotNull T[] getChildren();
 
 	/**
-	 * @return The child category nodes attached to this node.
+	 * @param id The identifier of the child node.
+	 * @return The matching child node, or null if no such node exists.
 	 */
-	default List<CategoryNode> getCategories() {
-		List<CategoryNode> list = new ArrayList<>();
-		for (Node t : this.getChildren()) {
-			if (t instanceof CategoryNode) {
-				list.add((CategoryNode) t);
-			}
+	@Nullable T get(@NotNull String id);
+
+	/**
+	 * @param relativePath The relative path, separated by '.'
+	 * @return The matching child node, or null if no such node exists.
+	 */
+	default @Nullable Node<?> resolve(@NotNull String relativePath) {
+		Node<?> result = this;
+		for (var id : relativePath.split("\\.")) {
+			result = result.get(id);
+			if (result == null) return null;
 		}
-		return list;
+		return result;
 	}
-
-	/**
-	 * @return A list of attached fields on this node.
-	 */
-	List<Field<?>> getFields();
 }
