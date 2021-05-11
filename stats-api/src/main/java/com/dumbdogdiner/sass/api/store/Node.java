@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  * Represents an node in the database with an identifier, a plugin it belongs to, and potentially child nodes.
  * @param <T> The type of child nodes this node can contain.
  */
-public interface Node<T extends Node<?>> {
+public interface Node<T extends ChildNode<?>> {
 	/**
 	 * @return The identifier of this node.
 	 */
@@ -18,19 +18,13 @@ public interface Node<T extends Node<?>> {
 	 * @return The full, unique identifier of this node.
 	 */
 	default @NotNull String getFullIdentifier() {
-		// recursively ascend through the node tree and append identifiers.
-		return this.getParent().getFullIdentifier() + "." + this.getIdentifier();
+		return this.getIdentifier();
 	}
 
 	/**
 	 * @return The plugin that created this node.
 	 */
 	@NotNull JavaPlugin getPlugin();
-
-	/**
-	 * @return The parent node of this node.
- 	 */
-	@NotNull Node<?> getParent();
 
 	/**
 	 * @return The child nodes attached to this node.
