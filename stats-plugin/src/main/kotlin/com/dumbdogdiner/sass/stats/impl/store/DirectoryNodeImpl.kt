@@ -32,7 +32,7 @@ class DirectoryNodeImpl private constructor(
 
     override fun unlink() {
         ensureValid()
-        TODO("Not yet implemented")
+        parent.removeChild
     }
 
     override fun getChildren(): Array<DirectoryNode> {
@@ -46,6 +46,7 @@ class DirectoryNodeImpl private constructor(
     }
 
     override fun mkdir(id: String, plugin: JavaPlugin): DirectoryNode {
+        ensureValid()
         if (id in childrenMap) throw IllegalStateException("")
         val dir = DirectoryNodeImpl(id, plugin, this)
         // add the child to our children list

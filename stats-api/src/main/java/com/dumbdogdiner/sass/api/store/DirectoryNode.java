@@ -4,7 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a node that contains other nodes, and possibly statistics.
+ * Represents a node that contains other directories and statistics.
  */
 public interface DirectoryNode extends DirectoryStorableNode<DirectoryStorableNode<?>> {
     /**
@@ -13,4 +13,6 @@ public interface DirectoryNode extends DirectoryStorableNode<DirectoryStorableNo
      * @return A new DirectoryNode which is a child of this node.
      */
     DirectoryNode mkdir(@NotNull String id, @NotNull JavaPlugin plugin);
+
+    // TODO statistic-creating methods
 }
