@@ -32,7 +32,7 @@ class DirectoryNodeImpl private constructor(
 
     override fun unlink() {
         ensureValid()
-        parent.removeChild
+        TODO()
     }
 
     override fun getChildren(): Array<DirectoryNode> {
