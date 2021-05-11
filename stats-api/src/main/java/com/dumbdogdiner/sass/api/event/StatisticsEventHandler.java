@@ -4,18 +4,19 @@
  */
 package com.dumbdogdiner.sass.api.event;
 
+import com.dumbdogdiner.sass.api.store.statistic.Statistic;
+import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a handler for a {@link StatisticsEventType}.
- * @param <T> The type of data received when this event handler is called.
+ * Represents a handler for a {@link StatisticsEvent}.
  */
-public interface StatisticsEventHandler<T> {
+public interface StatisticsEventHandler {
     /**
-     * @return The {@link StatisticsEventType} this handler is registered to.
+     * @return The {@link StatisticsEvent} this handler is registered to.
      */
     @NotNull
-    StatisticsEventType<T> getEventType();
+    StatisticsEvent getEvent();
 
     /**
      * Remove this event handler from the event type. It will no longer be called.
@@ -24,7 +25,8 @@ public interface StatisticsEventHandler<T> {
 
     /**
      * Execute this event handler.
-     * @param ctx The data associated with this event.
+     * @param stat The statistic that was modified.
+     * @param playerId The player whose statistic was modified.
      */
-    void execute(T ctx);
+    void execute(@NotNull Statistic stat, @NotNull UUID playerId);
 }

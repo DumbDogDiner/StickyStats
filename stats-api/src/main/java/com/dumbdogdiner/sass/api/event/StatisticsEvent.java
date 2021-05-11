@@ -4,40 +4,37 @@
  */
 package com.dumbdogdiner.sass.api.event;
 
-import java.util.function.Consumer;
+import com.dumbdogdiner.sass.api.store.statistic.Statistic;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.BiConsumer;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents an event type related to a statistics interaction.
- * @param <T> The type of data sent to handlers when this event is fired.
+ * Represents an event related to a statistics modification.
  */
-public interface StatisticsEventType<T> {
-    /**
-     * @return The identifier for this event type.
-     */
-    @NotNull
-    String getIdentifier();
-
+public interface StatisticsEvent {
     /**
      * @return The handlers to be called when this event is fired.
      */
     @NotNull
-    StatisticsEventHandler<T>[] getHandlers();
+    List<StatisticsEventHandler> getHandlers();
 
     /**
      * @param action The action this new event handler should perform.
      * @return A newly created event handler.
      */
     @NotNull
-    StatisticsEventHandler<T> create(@NotNull Consumer<T> action);
+    StatisticsEventHandler create(@NotNull BiConsumer<Statistic, UUID> action);
 
     /**
      * Fire this event, triggering all event handlers.
-     * @param ctx The data to send to each event handler.
+     * @param stat The statistic that was modified.
+     * @param playerId The player whose statistic was modified.
      */
-    default void fire(T ctx) {
+    default void fire(@NotNull Statistic stat, @NotNull UUID playerId) {
         for (var handler : getHandlers()) {
-            handler.execute(ctx);
+            handler.execute(stat, playerId);
         }
     }
 }

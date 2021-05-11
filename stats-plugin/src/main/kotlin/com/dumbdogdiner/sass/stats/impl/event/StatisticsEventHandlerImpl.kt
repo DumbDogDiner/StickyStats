@@ -1,15 +1,17 @@
 package com.dumbdogdiner.sass.stats.impl.event
 
 import com.dumbdogdiner.sass.api.event.StatisticsEventHandler
-import java.util.function.Consumer
+import com.dumbdogdiner.sass.api.store.statistic.Statistic
+import java.util.UUID
+import java.util.function.BiConsumer
 
-class StatisticsEventHandlerImpl<T>(
-    private val eventType: StatisticsEventTypeImpl<T>,
-    private val action: Consumer<T>
-) : StatisticsEventHandler<T> {
-    override fun getEventType() = eventType
+class StatisticsEventHandlerImpl(
+    private val event: StatisticsEventImpl,
+    private val action: BiConsumer<Statistic, UUID>,
+) : StatisticsEventHandler {
+    override fun getEvent() = event
 
-    override fun execute(ctx: T) = action.accept(ctx)
+    override fun execute(stat: Statistic, playerId: UUID) = action.accept(stat, playerId)
 
-    override fun remove() = eventType.removeEventHandler(this)
+    override fun remove() = event.removeEventHandler(this)
 }

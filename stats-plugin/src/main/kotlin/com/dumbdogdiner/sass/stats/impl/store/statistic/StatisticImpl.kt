@@ -1,6 +1,7 @@
 package com.dumbdogdiner.sass.stats.impl.store.statistic
 
 import com.dumbdogdiner.sass.api.store.statistic.Statistic
+import com.dumbdogdiner.sass.stats.impl.event.StatisticsEventImpl
 import com.dumbdogdiner.sass.stats.impl.store.StoreImpl
 import com.google.gson.JsonElement
 import java.util.UUID
@@ -11,6 +12,7 @@ class StatisticImpl(
 ) : Statistic {
     private val valueMap = mutableMapOf<UUID, JsonElement>()
     private var invalid = false
+    private var event = null as StatisticsEventImpl?
 
     override fun getIdentifier(): String {
         ensureValid()
@@ -20,6 +22,12 @@ class StatisticImpl(
     override fun getStore(): StoreImpl {
         ensureValid()
         return store
+    }
+
+    override fun getEvent() = event ?: run {
+        val result = StatisticsEventImpl(this)
+        event = result
+        result
     }
 
     override fun delete() {
@@ -36,6 +44,7 @@ class StatisticImpl(
     override fun set(playerId: UUID, value: JsonElement) {
         ensureValid()
         valueMap[playerId] = value
+        event?.handlers?.forEach { it.execute(this, playerId) }
     }
 
     override fun remove(playerId: UUID): Boolean {
@@ -45,5 +54,9 @@ class StatisticImpl(
 
     private fun ensureValid() {
         if (invalid) throw IllegalStateException("Use of invalid Statistic '$identifier'")
+    }
+
+    fun deleteEvent() {
+        event = null
     }
 }
