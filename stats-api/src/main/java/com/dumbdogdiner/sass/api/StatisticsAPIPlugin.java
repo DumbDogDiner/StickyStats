@@ -7,7 +7,6 @@ package com.dumbdogdiner.sass.api;
 import com.dumbdogdiner.sass.api.exception.InvalidServiceException;
 import com.dumbdogdiner.sass.api.store.Store;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +46,9 @@ public interface StatisticsAPIPlugin {
 
     /**
      * @param plugin The plugin to get statistics for.
+     * @param serverName The server to get statistics for.
      * @return The statistics store attached to this plugin instance.
      */
-    Store getStore(JavaPlugin plugin);
+    @NotNull
+    Store getStore(@NotNull JavaPlugin plugin, @NotNull String serverName);
 }
