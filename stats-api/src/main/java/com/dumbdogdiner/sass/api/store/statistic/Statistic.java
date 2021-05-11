@@ -1,9 +1,12 @@
+/*
+ * Copyright (c) 2021 DumbDogDiner <dumbdogdiner.com>. All rights reserved.
+ * Licensed under the MIT license, see LICENSE for more information.
+ */
 package com.dumbdogdiner.sass.api.store.statistic;
-
-import java.util.UUID;
 
 import com.dumbdogdiner.sass.api.store.Store;
 import com.google.gson.JsonElement;
+import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,12 +17,14 @@ public interface Statistic {
     /**
      * @return The unique identifier of this statistic.
      */
-    @NotNull String getIdentifier();
+    @NotNull
+    String getIdentifier();
 
     /**
      * @return The store this statistic is stored in.
      */
-    @NotNull Store getStore();
+    @NotNull
+    Store getStore();
 
     /**
      * Delete this statistic. Further use of this statistic must be avoided.
@@ -30,7 +35,8 @@ public interface Statistic {
      * @param playerId The {@link UUID} of the player.
      * @return The value of the statistic for a player, or null if it does not exist.
      */
-    @Nullable JsonElement get(@NotNull UUID playerId);
+    @Nullable
+    JsonElement get(@NotNull UUID playerId);
 
     /**
      * @param playerId The {@link UUID} of the player.

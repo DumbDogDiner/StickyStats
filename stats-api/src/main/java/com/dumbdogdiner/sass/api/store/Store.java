@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2021 DumbDogDiner <dumbdogdiner.com>. All rights reserved.
+ * Licensed under the MIT license, see LICENSE for more information.
+ */
 package com.dumbdogdiner.sass.api.store;
 
 import com.dumbdogdiner.sass.api.store.statistic.Statistic;
@@ -12,18 +16,21 @@ public interface Store {
     /**
      * @return The plugin this store belongs to.
      */
-    @NotNull JavaPlugin getPlugin();
+    @NotNull
+    JavaPlugin getPlugin();
 
     /**
      * @return The name of the server this Store is on.
      */
-    @NotNull String getServerName();
+    @NotNull
+    String getServerName();
 
     /**
      * @param id The identifier of the statistic to fetch.
      * @return The statistic with the given identifier, or null if none exists.
      */
-    @Nullable Statistic get(@NotNull String id);
+    @Nullable
+    Statistic get(@NotNull String id);
 
     /**
      * @param id The identifier of the new statistic.
