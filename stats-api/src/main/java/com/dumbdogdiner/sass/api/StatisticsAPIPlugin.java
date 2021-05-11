@@ -33,28 +33,8 @@ public interface StatisticsAPIPlugin {
 	}
 
 	/**
-	 * Register a new statistic field with the target value types.
-	 * @param plugin The plugin registering the field
-	 * @param values The types of the fields
-	 */
-	void registerField(JavaPlugin plugin, Class<?>... values);
-
-	/**
-	 * Register a new statistic field with a player value as the first parameter.
-	 * @param plugin The plugin registering the field
-	 * @param values The types of the fields
-	 */
-	default void registerPlayerField(JavaPlugin plugin, Class<?>... values) {
-		// hacky code to insert a player field into the parameter list.
-		Class<?>[] params = new Class<?>[values.length + 1];
-		System.arraycopy(values, 0, params, 1, values.length);
-		params[0] = Player.class;
-		// register as normal
-		this.registerField(plugin, params);
-	}
-
-	/**
+	 * @param plugin The plugin to get statistics for.
 	 * @return The statistics store attached to this plugin instance.
 	 */
-	Store getStore();
+	Store getStore(JavaPlugin plugin);
 }
