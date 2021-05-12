@@ -5,6 +5,8 @@
 package com.dumbdogdiner.sass.reward.api;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface RewardsAPIPlugin {
@@ -22,4 +24,11 @@ public interface RewardsAPIPlugin {
             return provider.getProvider();
         }
     }
+
+    /**
+     * @param plugin The plugin the store belongs to.
+     * @return The {@link ChallengeStore} for the given plugin.
+     */
+    @NotNull
+    ChallengeStore getChallengeStore(@NotNull JavaPlugin plugin);
 }
