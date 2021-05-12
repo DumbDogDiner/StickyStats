@@ -6,6 +6,7 @@ package com.dumbdogdiner.sass.reward.api;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,9 +30,15 @@ public interface ChallengeStore {
 
     /**
      * @param id The identifier of the new challenge.
+     * @param name The name of the new challenge.
+     * @param visibility The visibility of the new challenge.
      * @return True if a challenge was created, false if one already exists with that identifier.
      */
-    boolean createChallenge(@NotNull String id);
+    boolean createChallenge(
+        @NotNull String id,
+        @NotNull String name,
+        @NotNull Predicate<UUID> visibility
+    );
 
     /**
      * @return All of the registered challenges.

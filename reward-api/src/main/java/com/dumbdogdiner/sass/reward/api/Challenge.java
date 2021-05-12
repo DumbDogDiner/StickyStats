@@ -4,6 +4,8 @@
  */
 package com.dumbdogdiner.sass.reward.api;
 
+import java.util.UUID;
+import java.util.function.Predicate;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -33,6 +35,17 @@ public interface Challenge {
      * @param value The new friendly name of this challenge.
      */
     void setName(@NotNull String value);
+
+    /**
+     * @return The function that determines if a given player may see this challenge.
+     */
+    @NotNull
+    Predicate<UUID> getVisibility();
+
+    /**
+     * @param value The new function that determines if a given player may see this challenge.
+     */
+    void setVisibility(@NotNull Predicate<UUID> value);
 
     /**
      * Delete this challenge. Further use of this object is invalid.
