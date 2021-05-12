@@ -4,6 +4,8 @@
  */
 package com.dumbdogdiner.sass.reward.api;
 
+import com.dumbdogdiner.sass.stats.api.store.statistic.Statistic;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
@@ -61,9 +63,22 @@ public interface Challenge {
     Function<@NotNull UUID, @NotNull Integer> getProgress();
 
     /**
-     * Check this challenge for a given player, and give an award if the requirements are met.
+     * @param stat The statistic to add to the set of this challenge's associated statistics.
+     * @return True if the statistic was added, false if it was already associated.
      */
-    void check(@NotNull UUID playerId);
+    boolean addAssociatedStatistic(@NotNull Statistic stat);
+
+    /**
+     * @param stat The statistic to add to the set of this challenge's associated statistics.
+     * @return True if the statistic was removed, false if it was never associated.
+     */
+    boolean removeAssociatedStatistic(@NotNull Statistic stat);
+
+    /**
+     * @return The set of statistics that this challenge is associated with. When any of these statistics are modified,
+     * this challenge checks if it has been completed.
+     */
+    Set<Statistic> getAssociatedStatistics();
 
     /**
      * Delete this challenge. Further use of this object is invalid.

@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
     compileOnly(paper())
+    implementation(project(":stats-api")) // TODO merge stats and rewards
     implementation("org.jetbrains:annotations:16.0.2")
 }
 

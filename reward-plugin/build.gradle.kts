@@ -29,6 +29,7 @@ dependencies {
 	kapt("dev.jorel:commandapi-annotations:5.11")
 	// Shade CommandAPI into plugin
 	implementation("dev.jorel:commandapi-shade:5.11")
+	implementation(project(":stats-api")) // TODO merge stats and rewards
 }
 
 tasks {
