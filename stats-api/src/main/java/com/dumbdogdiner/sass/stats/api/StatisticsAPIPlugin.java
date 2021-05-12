@@ -2,10 +2,10 @@
  * Copyright (c) 2021 DumbDogDiner <dumbdogdiner.com>. All rights reserved.
  * Licensed under the MIT license, see LICENSE for more information.
  */
-package com.dumbdogdiner.sass.api;
+package com.dumbdogdiner.sass.stats.api;
 
-import com.dumbdogdiner.sass.api.exception.InvalidServiceException;
-import com.dumbdogdiner.sass.api.store.Store;
+import com.dumbdogdiner.sass.stats.api.exception.InvalidServiceException;
+import com.dumbdogdiner.sass.stats.api.store.Store;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;

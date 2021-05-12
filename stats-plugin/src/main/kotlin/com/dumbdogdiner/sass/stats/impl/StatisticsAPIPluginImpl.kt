@@ -1,6 +1,6 @@
 package com.dumbdogdiner.sass.stats.impl
 
-import com.dumbdogdiner.sass.api.StatisticsAPIPlugin
+import com.dumbdogdiner.sass.stats.api.StatisticsAPIPlugin
 import com.dumbdogdiner.sass.stats.impl.store.StoreImpl
 import org.bukkit.plugin.java.JavaPlugin
 

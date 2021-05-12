@@ -1,6 +1,6 @@
 package com.dumbdogdiner.sass.stats.impl.event
 
-import com.dumbdogdiner.sass.api.event.StatisticEventContext
+import com.dumbdogdiner.sass.stats.api.event.StatisticEventContext
 import com.dumbdogdiner.sass.stats.impl.store.statistic.StatisticImpl
 import com.google.gson.JsonElement
 import java.util.UUID

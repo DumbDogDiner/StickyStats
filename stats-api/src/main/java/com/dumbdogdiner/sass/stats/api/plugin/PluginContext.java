@@ -1,4 +1,4 @@
-package com.dumbdogdiner.sass.api.plugin;
+package com.dumbdogdiner.sass.stats.api.plugin;
 
 import org.bukkit.plugin.java.JavaPlugin;
 

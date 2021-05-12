@@ -1,7 +1,7 @@
 package com.dumbdogdiner.sass.stats.impl.event
 
-import com.dumbdogdiner.sass.api.event.StatisticEvent
-import com.dumbdogdiner.sass.api.event.StatisticEventContext
+import com.dumbdogdiner.sass.stats.api.event.StatisticEvent
+import com.dumbdogdiner.sass.stats.api.event.StatisticEventContext
 import com.dumbdogdiner.sass.stats.impl.store.statistic.StatisticImpl
 import java.util.function.Consumer
 

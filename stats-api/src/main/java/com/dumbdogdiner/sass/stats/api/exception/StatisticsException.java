@@ -1,4 +1,4 @@
-package com.dumbdogdiner.sass.api.exception;
+package com.dumbdogdiner.sass.stats.api.exception;
 
 /**
  * Represents a general statistics API error.

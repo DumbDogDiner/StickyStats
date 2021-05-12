@@ -1,6 +1,6 @@
-package com.dumbdogdiner.sass.api.exception;
+package com.dumbdogdiner.sass.stats.api.exception;
 
-import com.dumbdogdiner.sass.api.StatisticsAPIPlugin;
+import com.dumbdogdiner.sass.stats.api.StatisticsAPIPlugin;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
