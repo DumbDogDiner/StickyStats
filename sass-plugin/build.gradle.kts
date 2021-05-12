@@ -30,6 +30,11 @@ dependencies {
     kapt("dev.jorel:commandapi-annotations:5.11")
     // Shade CommandAPI into plugin
     implementation("dev.jorel:commandapi-shade:5.11")
+    // Add necessary database libraries
+    implementation("org.jetbrains.exposed:exposed-core:0.31.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.31.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.31.1")
+    implementation("org.postgresql:postgresql:42.2.20")
 }
 
 tasks {

@@ -12,6 +12,9 @@ import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
+import org.jetbrains.exposed.sql.Database
+import java.net.URI
+import java.net.URL
 
 @PluginMain
 class SassPlugin : JavaPlugin() {
@@ -31,5 +34,20 @@ class SassPlugin : JavaPlugin() {
         // we need to find an econ provider in order to deal out rewards
         RewardsAPIPluginImpl.economy = server.servicesManager.getRegistration(Economy::class.java)?.provider
             ?: throw IllegalStateException("An economy provider is required for this plugin!")
+
+        // read this plugin's config to get the database
+        config.also {
+            val database = it.getString("db.database") ?: throw IllegalStateException("Missing database")
+            val host = it.getString("db.host") ?: throw IllegalStateException("Missing host")
+            val port = it.getInt("db.port", 5432)
+            val username = it.getString("db.username") ?: throw IllegalStateException("Missing username")
+            val password = it.getString("db.password") ?: throw IllegalStateException("Missing password")
+
+            RewardsAPIPluginImpl.db = Database.connect(
+                url = URI("jdbc:postgresql", null, host, port, "/$database", null, null).toString(),
+                user = username,
+                password = password,
+            )
+        }
     }
 }
