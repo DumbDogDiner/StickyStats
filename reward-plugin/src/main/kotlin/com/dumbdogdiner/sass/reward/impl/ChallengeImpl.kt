@@ -2,13 +2,18 @@ package com.dumbdogdiner.sass.reward.impl
 
 import com.dumbdogdiner.sass.reward.api.Challenge
 import java.util.UUID
+import java.util.function.Function
 import java.util.function.Predicate
 
 class ChallengeImpl(
     private val store: ChallengeStoreImpl,
     private val identifier: String,
     private var name: String,
-    private var visibility: Predicate<UUID>
+    private var visibility: Predicate<UUID>,
+    private var reward: Function<UUID, Int>,
+    private var progress: Function<UUID, Float>,
+    private var progressString: Function<UUID, String>,
+    private var goalString: Function<UUID, String>,
 ) : Challenge {
     private var invalid = false
 
@@ -40,6 +45,46 @@ class ChallengeImpl(
     override fun setVisibility(value: Predicate<UUID>) {
         ensureValid()
         visibility = value
+    }
+
+    override fun getReward(): Function<UUID, Int> {
+        ensureValid()
+        return reward
+    }
+
+    override fun setReward(value: Function<UUID, Int>) {
+        ensureValid()
+        reward = value
+    }
+
+    override fun getProgress(): Function<UUID, Float> {
+        ensureValid()
+        return progress
+    }
+
+    override fun setProgress(value: Function<UUID, Float>) {
+        ensureValid()
+        progress = value
+    }
+
+    override fun getProgressString(): Function<UUID, String> {
+        ensureValid()
+        return progressString
+    }
+
+    override fun setProgressString(value: Function<UUID, String>) {
+        ensureValid()
+        progressString = value
+    }
+
+    override fun getGoalString(): Function<UUID, String> {
+        ensureValid()
+        return goalString
+    }
+
+    override fun setGoalString(value: Function<UUID, String>) {
+        ensureValid()
+        goalString = value
     }
 
     override fun delete() {

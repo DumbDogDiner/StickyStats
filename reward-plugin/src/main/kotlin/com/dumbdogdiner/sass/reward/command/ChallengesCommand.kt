@@ -3,20 +3,29 @@ package com.dumbdogdiner.sass.reward.command
 import com.dumbdogdiner.sass.reward.impl.RewardsAPIPluginImpl
 import dev.jorel.commandapi.annotations.Command
 import dev.jorel.commandapi.annotations.Default
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import kotlin.math.floor
 
 @Command("challenges")
 object ChallengesCommand {
     @Default
     @JvmStatic
-    fun rewardsList(sender: CommandSender) {
+    fun rewardsList(sender: Player) {
         sender.sendMessage("--- Challenges ---")
-        val uuid = (sender as? Player)?.uniqueId
+        val uuid = sender.uniqueId
         RewardsAPIPluginImpl.getAllStores().forEach { store ->
             store.allChallenges.forEach { challenge ->
-                if (uuid == null || challenge.visibility.test(uuid)) {
+                if (challenge.visibility.test(uuid)) {
                     sender.sendMessage(challenge.name)
+                    val reward = challenge.reward.apply(uuid)
+                    if (reward > 0) {
+                        sender.sendMessage("  Reward: $reward Miles")
+                        sender.sendMessage("  Completion: ${floor(challenge.progress.apply(uuid) * 100).toInt()}%")
+                        sender.sendMessage("  Progress: ${challenge.progressString.apply(uuid)}")
+                        sender.sendMessage("  Goal: ${challenge.goalString.apply(uuid)}")
+                    } else {
+                        sender.sendMessage("  Unattainable")
+                    }
                 }
             }
         }
