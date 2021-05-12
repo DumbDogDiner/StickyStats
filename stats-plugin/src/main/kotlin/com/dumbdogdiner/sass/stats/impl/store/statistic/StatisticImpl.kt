@@ -45,6 +45,7 @@ class StatisticImpl(
     override fun set(playerId: UUID, value: JsonElement) {
         ensureValid()
         val oldValue = valueMap[playerId]
+        valueMap[playerId] = value
         val ctx = StatisticEventContextImpl(this, playerId, oldValue, value)
         event?.handlers?.let {
             for (handler in it) {
@@ -52,8 +53,12 @@ class StatisticImpl(
                 handler.execute(ctx)
             }
         }
-        if (!ctx.isCanceled) {
-            valueMap[playerId] = value
+        if (ctx.isCanceled) {
+            if (oldValue == null) {
+                valueMap -= playerId
+            } else {
+                valueMap[playerId] = oldValue
+            }
         }
     }
 
