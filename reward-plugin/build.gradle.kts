@@ -1,4 +1,6 @@
+import kr.entree.spigradle.kotlin.jitpack
 import kr.entree.spigradle.kotlin.paper
+import kr.entree.spigradle.kotlin.vault
 
 plugins {
 	id("kr.entree.spigradle")
@@ -10,6 +12,8 @@ plugins {
 }
 
 repositories {
+	// Using Jitpack for VaultAPI
+	jitpack()
 	// Using these repositories for CommandAPI
 	maven("https://repo.codemc.org/repository/maven-public")
 	maven("https://raw.githubusercontent.com/JorelAli/CommandAPI/mvn-repo/")
@@ -18,6 +22,8 @@ repositories {
 dependencies {
 	compileOnly(paper())
 	implementation(project(":reward-api"))
+	// Add vault for rewards
+	compileOnly(vault())
 	// Add CommandAPI annotations
 	compileOnly("dev.jorel:commandapi-annotations:5.11")
 	kapt("dev.jorel:commandapi-annotations:5.11")
@@ -36,6 +42,10 @@ tasks {
 
 	shadowJar {
 		archiveClassifier.set("")
+	}
+
+	spigot {
+		depends = listOf("Vault") // Vault is required, as rewards are an essential part of this plugin
 	}
 }
 

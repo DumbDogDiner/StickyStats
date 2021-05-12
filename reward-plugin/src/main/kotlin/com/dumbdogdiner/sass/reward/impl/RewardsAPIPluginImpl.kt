@@ -1,6 +1,7 @@
 package com.dumbdogdiner.sass.reward.impl
 
 import com.dumbdogdiner.sass.reward.api.RewardsAPIPlugin
+import net.milkbowl.vault.economy.Economy
 import org.bukkit.plugin.java.JavaPlugin
 
 object RewardsAPIPluginImpl : RewardsAPIPlugin {
@@ -9,4 +10,6 @@ object RewardsAPIPluginImpl : RewardsAPIPlugin {
     override fun getChallengeStore(plugin: JavaPlugin) = storeMap.getOrPut(plugin) { ChallengeStoreImpl(plugin) }
 
     fun getAllStores() = storeMap.values
+
+    lateinit var economy: Economy
 }

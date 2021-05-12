@@ -6,6 +6,7 @@ import com.dumbdogdiner.sass.reward.impl.RewardsAPIPluginImpl
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIConfig
 import kr.entree.spigradle.annotations.PluginMain
+import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
@@ -23,5 +24,9 @@ class SassRewardPlugin : JavaPlugin() {
     override fun onEnable() {
         CommandAPI.onEnable(this)
         CommandAPI.registerCommand(ChallengesCommand::class.java)
+
+        // we need to find an econ provider in order to deal out rewards
+        RewardsAPIPluginImpl.economy = server.servicesManager.getRegistration(Economy::class.java)?.provider
+            ?: throw IllegalStateException("An economy provider is required for this plugin!")
     }
 }

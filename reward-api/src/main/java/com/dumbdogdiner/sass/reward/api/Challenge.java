@@ -103,6 +103,11 @@ public interface Challenge {
     void setGoalString(@NotNull Function<UUID, String> value);
 
     /**
+     * @param playerId The UUID of the player to reward for completing the challenge.
+     */
+    void reward(@NotNull UUID playerId);
+
+    /**
      * Delete this challenge. Further use of this object is invalid.
      */
     void delete();

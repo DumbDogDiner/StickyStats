@@ -1,6 +1,8 @@
 package com.dumbdogdiner.sass.reward.impl
 
 import com.dumbdogdiner.sass.reward.api.Challenge
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import java.util.UUID
 import java.util.function.Function
 import java.util.function.Predicate
@@ -85,6 +87,15 @@ class ChallengeImpl(
     override fun setGoalString(value: Function<UUID, String>) {
         ensureValid()
         goalString = value
+    }
+
+    override fun reward(playerId: UUID) {
+        val player = Bukkit.getOfflinePlayer(playerId)
+        val reward = reward.apply(playerId)
+        RewardsAPIPluginImpl.economy.depositPlayer(player, reward.toDouble())
+        if (player is Player) {
+            player.sendMessage("For completing the $name challenge, you have been awarded $reward miles!")
+        }
     }
 
     override fun delete() {
