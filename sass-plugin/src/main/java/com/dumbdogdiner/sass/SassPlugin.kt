@@ -1,10 +1,10 @@
 package com.dumbdogdiner.sass
 
+import com.dumbdogdiner.sass.api.reward.RewardsAPIPlugin
+import com.dumbdogdiner.sass.api.stats.StatisticsAPIPlugin
 import com.dumbdogdiner.sass.command.ChallengesCommand
 import com.dumbdogdiner.sass.impl.reward.RewardsAPIPluginImpl
 import com.dumbdogdiner.sass.impl.stats.StatisticsAPIPluginImpl
-import com.dumbdogdiner.sass.api.reward.RewardsAPIPlugin
-import com.dumbdogdiner.sass.api.stats.StatisticsAPIPlugin
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIConfig
 import kr.entree.spigradle.annotations.PluginMain

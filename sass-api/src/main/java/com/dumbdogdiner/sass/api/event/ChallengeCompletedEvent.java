@@ -2,9 +2,11 @@
  * Copyright (c) 2021 DumbDogDiner <dumbdogdiner.com>. All rights reserved.
  * Licensed under the MIT license, see LICENSE for more information.
  */
-package com.dumbdogdiner.sass.api.reward;
+package com.dumbdogdiner.sass.api.event;
 
+import com.dumbdogdiner.sass.api.reward.Challenge;
 import java.util.UUID;
+import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -16,10 +18,14 @@ public class ChallengeCompletedEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 
+    /** The challenge associated with this event. */
     @NotNull
+    @Getter
     private final Challenge challenge;
 
+    /** The UUID of the player associated with this event. */
     @NotNull
+    @Getter
     private final UUID playerId;
 
     public ChallengeCompletedEvent(
@@ -28,22 +34,6 @@ public class ChallengeCompletedEvent extends Event {
     ) {
         this.challenge = challenge;
         this.playerId = playerId;
-    }
-
-    /**
-     * @return The challenge associated with this event.
-     */
-    @NotNull
-    public Challenge getChallenge() {
-        return challenge;
-    }
-
-    /**
-     * @return The UUID of the player associated with this event.
-     */
-    @NotNull
-    public UUID getPlayerId() {
-        return playerId;
     }
 
     @NotNull

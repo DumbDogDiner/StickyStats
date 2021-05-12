@@ -4,7 +4,6 @@
  */
 package com.dumbdogdiner.sass.api.stats.store.statistic;
 
-import com.dumbdogdiner.sass.api.stats.event.StatisticEvent;
 import com.dumbdogdiner.sass.api.stats.store.Store;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -27,12 +26,6 @@ public interface Statistic {
      */
     @NotNull
     Store getStore();
-
-    /**
-     * @return The event that gets fired when this statistic is modified.
-     */
-    @NotNull
-    StatisticEvent getEvent();
 
     /**
      * Delete this statistic. Further use of this statistic must be avoided.

@@ -1,10 +1,10 @@
 package com.dumbdogdiner.sass.impl.stats.store.statistic
 
+import com.dumbdogdiner.sass.api.event.StatisticModifiedEvent
 import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic
-import com.dumbdogdiner.sass.impl.stats.event.StatisticEventContextImpl
-import com.dumbdogdiner.sass.impl.stats.event.StatisticEventImpl
 import com.dumbdogdiner.sass.impl.stats.store.StoreImpl
 import com.google.gson.JsonElement
+import org.bukkit.Bukkit
 import java.util.UUID
 
 class StatisticImpl(
@@ -13,7 +13,6 @@ class StatisticImpl(
 ) : Statistic {
     private val valueMap = mutableMapOf<UUID, JsonElement>()
     private var invalid = false
-    private var event = null as StatisticEventImpl?
 
     override fun getIdentifier(): String {
         ensureValid()
@@ -23,12 +22,6 @@ class StatisticImpl(
     override fun getStore(): StoreImpl {
         ensureValid()
         return store
-    }
-
-    override fun getEvent() = event ?: run {
-        val result = StatisticEventImpl(this)
-        event = result
-        result
     }
 
     override fun delete() {
@@ -46,14 +39,9 @@ class StatisticImpl(
         ensureValid()
         val oldValue = valueMap[playerId]
         valueMap[playerId] = value
-        val ctx = StatisticEventContextImpl(this, playerId, oldValue, value)
-        event?.handlers?.let {
-            for (handler in it) {
-                if (ctx.isCanceled) break
-                handler.execute(ctx)
-            }
-        }
-        if (ctx.isCanceled) {
+        val event = StatisticModifiedEvent(this, playerId, oldValue, value)
+        Bukkit.getPluginManager().callEvent(event)
+        if (event.isCancelled) {
             if (oldValue == null) {
                 valueMap -= playerId
             } else {
@@ -69,9 +57,5 @@ class StatisticImpl(
 
     private fun ensureValid() {
         if (invalid) throw IllegalStateException("Use of invalid Statistic '$identifier'")
-    }
-
-    fun deleteEvent() {
-        event = null
     }
 }

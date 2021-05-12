@@ -1,11 +1,13 @@
 package com.dumbdogdiner.sass.impl.reward
 
+import com.dumbdogdiner.sass.api.event.ChallengeCompletedEvent
+import com.dumbdogdiner.sass.api.event.StatisticModifiedEvent
 import com.dumbdogdiner.sass.api.reward.Challenge
-import com.dumbdogdiner.sass.api.reward.ChallengeCompletedEvent
-import com.dumbdogdiner.sass.api.stats.event.StatisticEventHandler
 import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
 import java.util.UUID
 import java.util.function.Function
 
@@ -17,10 +19,13 @@ class ChallengeImpl(
     private val start: Function<UUID, Int>,
     private val goal: Function<UUID, Int>,
     private val progress: Function<UUID, Int>,
-) : Challenge {
+) : Challenge, Listener {
     private var invalid = false
     private val associatedStatistics = mutableSetOf<Statistic>()
-    private val statEvents = mutableMapOf<Statistic, StatisticEventHandler>()
+
+    init {
+        Bukkit.getPluginManager().registerEvents(this, store.plugin)
+    }
 
     override fun getChallengeStore(): ChallengeStoreImpl {
         ensureValid()
@@ -59,23 +64,12 @@ class ChallengeImpl(
 
     override fun addAssociatedStatistic(stat: Statistic): Boolean {
         ensureValid()
-        return if (!associatedStatistics.add(stat)) {
-            false
-        } else {
-            statEvents[stat] = stat.event.create { check(it.playerId) }
-            true
-        }
+        return associatedStatistics.add(stat)
     }
 
     override fun removeAssociatedStatistic(stat: Statistic): Boolean {
         ensureValid()
-        return if (!associatedStatistics.remove(stat)) {
-            false
-        } else {
-            statEvents[stat]?.remove()
-            statEvents.remove(stat)
-            true
-        }
+        return associatedStatistics.remove(stat)
     }
 
     override fun getAssociatedStatistics(): Set<Statistic> {
@@ -86,11 +80,20 @@ class ChallengeImpl(
     override fun delete() {
         ensureValid()
         store.removeChallenge(identifier)
+        StatisticModifiedEvent.getHandlerList().unregister(this)
         invalid = true
     }
 
     private fun ensureValid() {
         if (invalid) throw IllegalStateException("Use of invalid statistic '$identifier'")
+    }
+
+    @EventHandler
+    private fun onStatisticModified(event: StatisticModifiedEvent) {
+        ensureValid()
+        if (event.statistic in associatedStatistics) {
+            check(event.playerId)
+        }
     }
 
     private fun check(playerId: UUID) {
