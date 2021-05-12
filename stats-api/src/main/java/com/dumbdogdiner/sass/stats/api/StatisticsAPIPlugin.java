@@ -4,44 +4,26 @@
  */
 package com.dumbdogdiner.sass.stats.api;
 
-import com.dumbdogdiner.sass.stats.api.exception.InvalidServiceException;
 import com.dumbdogdiner.sass.stats.api.store.Store;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface StatisticsAPIPlugin {
     /**
-     * Register the statistics service.
-     * @param plugin The plugin registering the service
-     * @param service The plugin's implementation of the service
+     * @return The instantiated statistics service object, or null if the service is not registered.
      */
-    static void register(JavaPlugin plugin, StatisticsAPIPlugin service) {
-        Bukkit
-            .getServicesManager()
-            .register(
-                StatisticsAPIPlugin.class,
-                service,
-                plugin,
-                ServicePriority.Lowest
-            );
-    }
-
-    /**
-     * Fetch the instantiated statistics service object.
-     * @return {@link StatisticsAPIPlugin}
-     */
-    @NotNull
+    @Nullable
     static StatisticsAPIPlugin getInstance() {
         var provider = Bukkit
             .getServicesManager()
             .getRegistration(StatisticsAPIPlugin.class);
-        // just in case someone tries something wacky.
         if (provider == null) {
-            throw new InvalidServiceException(null);
+            return null;
+        } else {
+            return provider.getProvider();
         }
-        return provider.getProvider();
     }
 
     /**
