@@ -5,6 +5,7 @@
 package com.dumbdogdiner.sass.api.event;
 
 import com.dumbdogdiner.sass.api.store.statistic.Statistic;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
@@ -33,10 +34,35 @@ public interface StatisticEventContext {
     JsonElement getOldValue();
 
     /**
+     * @param <T> The type of the data.
+     * @param clazz The class object of T.
+     * @return The old value of the statistic. Will be null if there was no old value.
+     */
+    @Nullable
+    default <T> T getOldValue(@NotNull Class<T> clazz) {
+        var value = this.getOldValue();
+        if (value == null) {
+            return null;
+        } else {
+            return new Gson().fromJson(value, clazz);
+        }
+    }
+
+    /**
      * @return The new value of the statistic.
      */
     @NotNull
     JsonElement getNewValue();
+
+    /**
+     * @param <T> The type of the data.
+     * @param clazz The class object of T.
+     * @return The new value of the statistic.
+     */
+    @NotNull
+    default <T> T getNewValue(@NotNull Class<T> clazz) {
+        return new Gson().fromJson(this.getNewValue(), clazz);
+    }
 
     /**
      * @return True if the event is to be canceled.
