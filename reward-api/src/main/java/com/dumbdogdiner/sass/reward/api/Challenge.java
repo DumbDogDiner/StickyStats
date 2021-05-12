@@ -6,8 +6,8 @@ package com.dumbdogdiner.sass.reward.api;
 
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a challenge. Challenges are goals that a player may pursue. They contain various attributes that allow
@@ -27,85 +27,43 @@ public interface Challenge {
     String getIdentifier();
 
     /**
-     * @return The friendly name of this challenge.
+     * @return The function that determines the friendly name of this challenge for a given player, or null if the
+     * player should not see this challenge.
      */
     @NotNull
-    String getName();
-
-    /**
-     * @param value The new friendly name of this challenge.
-     */
-    void setName(@NotNull String value);
-
-    /**
-     * @return The function that determines if a given player may see this challenge.
-     */
-    @NotNull
-    Predicate<UUID> getVisibility();
-
-    /**
-     * @param value The new function that determines if a given player may see this challenge.
-     */
-    void setVisibility(@NotNull Predicate<UUID> value);
+    Function<@NotNull UUID, @Nullable String> getName();
 
     /**
      * @return The function that determines the reward for a given player. The function should return a nonzero value,
      * indicating the number of miles to reward. Other values indicate that the reward is not attainable.
      */
     @NotNull
-    Function<UUID, Integer> getReward();
+    Function<@NotNull UUID, @NotNull Integer> getReward();
 
     /**
-     * @param value The new function that determines the reward for a given player.
-     * @see Challenge#getReward()
-     */
-    void setReward(@NotNull Function<UUID, Integer> value);
-
-    /**
-     * @return The function that determines the progress percentage displayed to the player. The function should return
-     * a value in the range [0, 1). Values outside this range will be coerced into this range.
+     * @return The function that determines the start of the range that this challenge spans for a given player.
      */
     @NotNull
-    Function<UUID, Float> getProgress();
+    Function<@NotNull UUID, @NotNull Integer> getStart();
 
     /**
-     * @param value The new function that determines the progress percentage displayed to the player.
-     * @see Challenge#getProgress()
-     */
-    void setProgress(@NotNull Function<UUID, Float> value);
-
-    /**
-     * @return The function that determines the progress string shown to the player. This should clearly indicate the
-     * progress using applicable units and descriptions. For example, a challenge for number of ores mined might return
-     * "58 ores".
+     * @return The function that determines the end of the range that this challenge spans for a given player.
      */
     @NotNull
-    Function<UUID, String> getProgressString();
+    Function<@NotNull UUID, @NotNull Integer> getGoal();
 
     /**
-     * @param value The new function that determines the progress string shown to the player.
-     * @see Challenge#getProgressString()
-     */
-    void setProgressString(@NotNull Function<UUID, String> value);
-
-    /**
-     * @return The function that determines the goal string shown to the player. This should clearly indicate the goal
-     * using applicable units and descriptions. For example, a challenge for number of ores mined, with a goal of 100
-     * ores mined, might return "100 ores".
+     * @return The function that determines an integral value a given player has for this challenge.
+     * @see Challenge#getStart()
+     * @see Challenge#getGoal()
      */
     @NotNull
-    Function<UUID, String> getGoalString();
+    Function<@NotNull UUID, @NotNull Integer> getProgress();
 
     /**
-     * @param value The new function that determines the goal string shown to the player.
-     * @see Challenge#getGoalString()
+     * Check this challenge for a given player, and give an award if the requirements are met.
      */
-    void setGoalString(@NotNull Function<UUID, String> value);
-
-    /**
-     * @param playerId The UUID of the player to reward for completing the challenge.
-     */
-    void reward(@NotNull UUID playerId);
+    void check(@NotNull UUID playerId);
 
     /**
      * Delete this challenge. Further use of this object is invalid.

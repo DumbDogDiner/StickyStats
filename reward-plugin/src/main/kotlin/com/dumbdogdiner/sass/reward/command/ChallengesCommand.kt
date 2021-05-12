@@ -12,20 +12,22 @@ object ChallengesCommand {
     @JvmStatic
     fun rewardsList(sender: Player) {
         sender.sendMessage("--- Challenges ---")
-        val uuid = sender.uniqueId
+        val playerId = sender.uniqueId
         RewardsAPIPluginImpl.getAllStores().forEach { store ->
             store.allChallenges.forEach { challenge ->
-                if (challenge.visibility.test(uuid)) {
-                    sender.sendMessage(challenge.name)
-                    val reward = challenge.reward.apply(uuid)
+                val name = challenge.name.apply(playerId)
+                name?.let {
+                    sender.sendMessage(name)
+                    val reward = challenge.reward.apply(playerId)
                     if (reward > 0) {
-                        val percentage = floor(challenge.progress.apply(uuid) * 100).toInt().coerceIn(0..99)
-                        val progressString = challenge.progressString.apply(uuid)
-                        val goalString = challenge.goalString.apply(uuid)
+                        val start = challenge.start.apply(playerId)
+                        val goal = challenge.goal.apply(playerId)
+                        val progress = challenge.progress.apply(playerId)
+                        val percentage = floor(100 * progress.toDouble() / (goal - start).toDouble())
                         sender.sendMessage("  Reward: $reward Miles")
                         sender.sendMessage("  Completion: $percentage%")
-                        sender.sendMessage("  Progress: $progressString")
-                        sender.sendMessage("  Goal: $goalString")
+                        sender.sendMessage("  Progress: $progress")
+                        sender.sendMessage("  Goal: $goal")
                     } else {
                         sender.sendMessage("  Unattainable")
                     }
