@@ -1,7 +1,7 @@
 package com.dumbdogdiner.sass.reward
 
 import com.dumbdogdiner.sass.reward.api.RewardsAPIPlugin
-import com.dumbdogdiner.sass.reward.command.RewardsListCommand
+import com.dumbdogdiner.sass.reward.command.ChallengesCommand
 import com.dumbdogdiner.sass.reward.impl.RewardsAPIPluginImpl
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIConfig
@@ -22,6 +22,6 @@ class SassRewardPlugin : JavaPlugin() {
 
     override fun onEnable() {
         CommandAPI.onEnable(this)
-        CommandAPI.registerCommand(RewardsListCommand::class.java)
+        CommandAPI.registerCommand(ChallengesCommand::class.java)
     }
 }

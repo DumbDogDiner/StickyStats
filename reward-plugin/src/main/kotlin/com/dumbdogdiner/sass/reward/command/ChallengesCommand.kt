@@ -5,12 +5,12 @@ import dev.jorel.commandapi.annotations.Command
 import dev.jorel.commandapi.annotations.Default
 import org.bukkit.command.CommandSender
 
-@Command("rewardslist")
-object RewardsListCommand {
+@Command("challenges")
+object ChallengesCommand {
     @Default
     @JvmStatic
     fun rewardsList(sender: CommandSender) {
-        sender.sendMessage("--- Rewards ---")
+        sender.sendMessage("--- Challenges ---")
         RewardsAPIPluginImpl.getAllStores().forEach { store ->
             store.allChallenges.forEach { challenge ->
                 sender.sendMessage(challenge.name)
