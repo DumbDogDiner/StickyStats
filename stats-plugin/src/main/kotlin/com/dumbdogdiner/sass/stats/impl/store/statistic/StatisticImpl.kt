@@ -1,7 +1,8 @@
 package com.dumbdogdiner.sass.stats.impl.store.statistic
 
 import com.dumbdogdiner.sass.api.store.statistic.Statistic
-import com.dumbdogdiner.sass.stats.impl.event.StatisticsEventImpl
+import com.dumbdogdiner.sass.stats.impl.event.StatisticEventContextImpl
+import com.dumbdogdiner.sass.stats.impl.event.StatisticEventImpl
 import com.dumbdogdiner.sass.stats.impl.store.StoreImpl
 import com.google.gson.JsonElement
 import java.util.UUID
@@ -12,7 +13,7 @@ class StatisticImpl(
 ) : Statistic {
     private val valueMap = mutableMapOf<UUID, JsonElement>()
     private var invalid = false
-    private var event = null as StatisticsEventImpl?
+    private var event = null as StatisticEventImpl?
 
     override fun getIdentifier(): String {
         ensureValid()
@@ -25,7 +26,7 @@ class StatisticImpl(
     }
 
     override fun getEvent() = event ?: run {
-        val result = StatisticsEventImpl(this)
+        val result = StatisticEventImpl(this)
         event = result
         result
     }
@@ -43,8 +44,17 @@ class StatisticImpl(
 
     override fun set(playerId: UUID, value: JsonElement) {
         ensureValid()
-        valueMap[playerId] = value
-        event?.handlers?.forEach { it.execute(this, playerId) }
+        val oldValue = valueMap[playerId]
+        val ctx = StatisticEventContextImpl(this, playerId, oldValue, value)
+        event?.handlers?.let {
+            for (handler in it) {
+                if (ctx.isCanceled) break
+                handler.execute(ctx)
+            }
+        }
+        if (!ctx.isCanceled) {
+            valueMap[playerId] = value
+        }
     }
 
     override fun remove(playerId: UUID): Boolean {
