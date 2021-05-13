@@ -2,9 +2,10 @@
  * Copyright (c) 2021 DumbDogDiner <dumbdogdiner.com>. All rights reserved.
  * Licensed under the MIT license, see LICENSE for more information.
  */
-package com.dumbdogdiner.sass.api.event;
+package api.event;
 
-import com.dumbdogdiner.sass.api.reward.Challenge;
+import api.reward.Challenge;
+
 import java.util.UUID;
 import lombok.Getter;
 import org.bukkit.event.Event;

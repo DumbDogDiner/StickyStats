@@ -2,9 +2,10 @@
  * Copyright (c) 2021 DumbDogDiner <dumbdogdiner.com>. All rights reserved.
  * Licensed under the MIT license, see LICENSE for more information.
  */
-package com.dumbdogdiner.sass.api.reward;
+package api.reward;
 
-import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic;
+import api.stats.store.statistic.Statistic;
+
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
