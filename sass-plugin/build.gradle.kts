@@ -35,6 +35,9 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.31.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.31.1")
     implementation("org.postgresql:postgresql:42.2.20")
+    // Add Jackson JSON and CBOR for converting between the two formats
+    implementation("com.fasterxml.jackson.core:jackson-core:2.12.3")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.12.3")
 }
 
 tasks {
