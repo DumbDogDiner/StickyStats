@@ -50,6 +50,8 @@ class SassPlugin : JavaPlugin() {
         }
 
         SassStatistics.init(db)
+
+        Bukkit.getPluginManager().registerEvents(SassServiceImpl, this)
     }
 
     companion object {

@@ -35,31 +35,31 @@ object SassStatistics : Table() {
 
     private fun selector(stat: StatisticImpl) = (identifierColumn eq stat.identifier) and
             (pluginColumn eq stat.store.plugin.name) and
-            (serverColumn eq stat.store.serverName)
+            (serverColumn eq stat.store.server.name)
 
     private fun selector(stat: StatisticImpl, playerId: UUID) = selector(stat) and (playerIdColumn eq playerId)
 
-    fun put(stat: StatisticImpl, id: UUID, data: JsonElement) = transaction(db) {
-        val updateResult = update({ selector(stat, id) }) {
+    fun put(stat: StatisticImpl, playerId: UUID, data: JsonElement) = transaction(db) {
+        val updateResult = update({ selector(stat, playerId) }) {
             it[dataColumn] = ExposedBlob(data.toCbor())
         }
         if (updateResult == 0) insert {
             it[identifierColumn] = stat.identifier
             it[pluginColumn] = stat.store.plugin.name
-            it[serverColumn] = stat.store.serverName
-            it[playerIdColumn] = id
+            it[serverColumn] = stat.store.server.name
+            it[playerIdColumn] = playerId
             it[dataColumn] = ExposedBlob(data.toCbor())
         }
     }
 
-    fun get(stat: StatisticImpl, id: UUID) = transaction(db) {
-        select(selector(stat, id)).firstOrNull()?.let {
+    fun get(stat: StatisticImpl, playerId: UUID) = transaction(db) {
+        select(selector(stat, playerId)).firstOrNull()?.let {
             it[dataColumn].bytes.fromCbor()
         }
     }
 
-    fun delete(stat: StatisticImpl, id: UUID) = transaction(db) {
-        deleteWhere { selector(stat, id) }
+    fun delete(stat: StatisticImpl, playerId: UUID) = transaction(db) {
+        deleteWhere { selector(stat, playerId) }
     }
 
     fun reset(stat: StatisticImpl) = transaction(db) {

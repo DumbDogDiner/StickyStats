@@ -16,18 +16,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface Challenge {
     /**
-     * @return The store this challenge belongs to.
-     */
-    @NotNull
-    ChallengeStore getChallengeStore();
-
-    /**
-     * @return The identifier for this challenge.
-     */
-    @NotNull
-    String getIdentifier();
-
-    /**
      * @return The name of this challenge.
      */
     @NotNull
@@ -67,7 +55,7 @@ public interface Challenge {
     }
 
     /**
-     * Delete this challenge. Further use of this object is invalid.
+     * Unregister this challenge. It will no longer give rewards or be listed in the challenge list.
      */
-    void delete();
+    void unregister();
 }

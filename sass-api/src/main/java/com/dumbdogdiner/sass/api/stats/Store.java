@@ -4,7 +4,7 @@
  */
 package com.dumbdogdiner.sass.api.stats;
 
-import com.dumbdogdiner.sass.api.stats.Statistic;
+import org.bukkit.Server;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,10 +19,10 @@ public interface Store {
     JavaPlugin getPlugin();
 
     /**
-     * @return The name of the server this Store is on.
+     * @return The server this store belongs to.
      */
     @NotNull
-    String getServerName();
+    Server getServer();
 
     /**
      * @param id The identifier of the statistic to fetch.
