@@ -14,7 +14,6 @@ import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.exposed.sql.Database
 import java.net.URI
-import java.net.URL
 
 @PluginMain
 class SassPlugin : JavaPlugin() {

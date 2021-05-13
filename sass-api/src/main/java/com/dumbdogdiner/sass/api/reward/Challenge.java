@@ -6,10 +6,10 @@ package com.dumbdogdiner.sass.api.reward;
 
 import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic;
 import com.google.gson.JsonElement;
-import java.util.UUID;
-import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Function;
 
 /**
  * Represents a challenge. Challenges are goals that a player may pursue. They contain various attributes that allow

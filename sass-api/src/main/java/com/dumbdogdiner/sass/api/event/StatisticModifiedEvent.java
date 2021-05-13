@@ -7,7 +7,6 @@ package com.dumbdogdiner.sass.api.event;
 import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.event.Cancellable;
@@ -15,6 +14,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 /**
  * Called when a statistic is modified.

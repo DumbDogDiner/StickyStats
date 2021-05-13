@@ -5,11 +5,12 @@
 package com.dumbdogdiner.sass.api.event;
 
 import com.dumbdogdiner.sass.api.reward.Challenge;
-import java.util.UUID;
 import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 /**
  * Called when a challenge is completed.

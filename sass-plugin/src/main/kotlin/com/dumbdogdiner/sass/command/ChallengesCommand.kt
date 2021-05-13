@@ -4,7 +4,6 @@ import com.dumbdogdiner.sass.impl.reward.RewardsAPIPluginImpl
 import dev.jorel.commandapi.annotations.Command
 import dev.jorel.commandapi.annotations.Default
 import org.bukkit.entity.Player
-import kotlin.math.floor
 
 @Command("challenges")
 object ChallengesCommand {
