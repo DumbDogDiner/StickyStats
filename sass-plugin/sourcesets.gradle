@@ -1,0 +1,15 @@
+sourceSets {
+    api {
+        java.srcDirs('/src/com.dumbdogdiner.sass.api/java', '/src/com.dumbdogdiner.sass.api/kotlin')
+    }
+}
+
+
+
+dependencies {
+    apiCompileOnly(paper())
+    apiImplementation("org.projectlombok:lombok:1.18.18")
+    apiAnnotationProcessor("org.projectlombok:lombok:1.18.18")
+    apiImplementation("org.jetbrains:annotations:16.0.2")
+    api sourceSets.api.output
+}

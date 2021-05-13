@@ -1,12 +1,11 @@
 package com.dumbdogdiner.sass.impl.reward
 
-import com.dumbdogdiner.sass.api.reward.ChallengeStore
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.UUID
 import java.util.function.Function
 
 class ChallengeStoreImpl(private val plugin: JavaPlugin) :
-    ChallengeStore {
+    com.dumbdogdiner.sass.api.reward.ChallengeStore {
     private val challengeMap = mutableMapOf<String, ChallengeImpl>()
 
     override fun getPlugin() = plugin

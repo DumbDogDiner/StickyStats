@@ -2,6 +2,7 @@ import kr.entree.spigradle.kotlin.papermc
 
 plugins {
     java
+    id("idea")
     id("com.diffplug.spotless") version "5.8.2"
     id("kr.entree.spigradle") version "2.2.3"
 }

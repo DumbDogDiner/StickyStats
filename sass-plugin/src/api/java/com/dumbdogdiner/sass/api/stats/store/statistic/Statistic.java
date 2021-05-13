@@ -2,9 +2,9 @@
  * Copyright (c) 2021 DumbDogDiner <dumbdogdiner.com>. All rights reserved.
  * Licensed under the MIT license, see LICENSE for more information.
  */
-package api.stats.store.statistic;
+package com.dumbdogdiner.sass.api.stats.store.statistic;
 
-import api.stats.store.Store;
+import com.dumbdogdiner.sass.api.stats.store.Store;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import java.util.UUID;

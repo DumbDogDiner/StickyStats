@@ -1,7 +1,5 @@
 package com.dumbdogdiner.sass.impl.stats.store.statistic
 
-import com.dumbdogdiner.sass.api.event.StatisticModifiedEvent
-import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic
 import com.dumbdogdiner.sass.impl.stats.store.StoreImpl
 import com.google.gson.JsonElement
 import org.bukkit.Bukkit
@@ -10,7 +8,7 @@ import java.util.UUID
 class StatisticImpl(
     private val identifier: String,
     private val store: StoreImpl,
-) : Statistic {
+) : com.dumbdogdiner.sass.api.stats.store.statistic.Statistic {
     private val valueMap = mutableMapOf<UUID, JsonElement>()
     private var invalid = false
 
@@ -26,7 +24,7 @@ class StatisticImpl(
 
     override fun delete() {
         ensureValid()
-        store.delete(identifier)
+        store.remove(identifier)
         invalid = true
     }
 
@@ -39,7 +37,7 @@ class StatisticImpl(
         ensureValid()
         val oldValue = valueMap[playerId]
         valueMap[playerId] = value
-        val event = StatisticModifiedEvent(this, playerId, oldValue, value)
+        val event = com.dumbdogdiner.sass.api.event.StatisticModifiedEvent(this, playerId, oldValue, value)
         Bukkit.getPluginManager().callEvent(event)
         if (event.isCancelled) {
             if (oldValue == null) {

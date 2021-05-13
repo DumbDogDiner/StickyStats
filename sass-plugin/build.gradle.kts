@@ -3,10 +3,12 @@ import kr.entree.spigradle.kotlin.paper
 import kr.entree.spigradle.kotlin.vault
 
 plugins {
+    id("java-library")
     id("kr.entree.spigradle")
     kotlin("jvm") version "1.4.32"
     // Use kapt for CommandAPI annotations
     kotlin("kapt") version "1.4.32"
+    id("idea")
     // Use shadow to shade in CommandAPI
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
@@ -20,9 +22,11 @@ repositories {
 }
 
 dependencies {
+    implementation("org.projectlombok:lombok:1.18.18")
+    annotationProcessor("org.projectlombok:lombok:1.18.18")
+    implementation("org.jetbrains:annotations:16.0.2")
     compileOnly(paper())
     // Require our API
-    implementation(project(":sass-api"))
     // Add vault for rewards
     compileOnly(vault())
     // Add CommandAPI annotations
@@ -31,7 +35,7 @@ dependencies {
     // Shade CommandAPI into plugin
     implementation("dev.jorel:commandapi-shade:5.11")
 }
-
+apply(from = "sourcesets.gradle")
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()

@@ -1,9 +1,5 @@
 package com.dumbdogdiner.sass.impl.reward
 
-import com.dumbdogdiner.sass.api.event.ChallengeCompletedEvent
-import com.dumbdogdiner.sass.api.event.StatisticModifiedEvent
-import com.dumbdogdiner.sass.api.reward.Challenge
-import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -19,9 +15,9 @@ class ChallengeImpl(
     private val start: Function<UUID, Int>,
     private val goal: Function<UUID, Int>,
     private val progress: Function<UUID, Int>,
-) : Challenge, Listener {
+) : com.dumbdogdiner.sass.api.reward.Challenge, Listener {
     private var invalid = false
-    private val associatedStatistics = mutableSetOf<Statistic>()
+    private val associatedStatistics = mutableSetOf<com.dumbdogdiner.sass.api.stats.store.statistic.Statistic>()
 
     init {
         Bukkit.getPluginManager().registerEvents(this, store.plugin)
@@ -62,17 +58,17 @@ class ChallengeImpl(
         return progress
     }
 
-    override fun addAssociatedStatistic(stat: Statistic): Boolean {
+    override fun addAssociatedStatistic(stat: com.dumbdogdiner.sass.api.stats.store.statistic.Statistic): Boolean {
         ensureValid()
         return associatedStatistics.add(stat)
     }
 
-    override fun removeAssociatedStatistic(stat: Statistic): Boolean {
+    override fun removeAssociatedStatistic(stat: com.dumbdogdiner.sass.api.stats.store.statistic.Statistic): Boolean {
         ensureValid()
         return associatedStatistics.remove(stat)
     }
 
-    override fun getAssociatedStatistics(): Set<Statistic> {
+    override fun getAssociatedStatistics(): Set<com.dumbdogdiner.sass.api.stats.store.statistic.Statistic> {
         ensureValid()
         return associatedStatistics
     }
@@ -80,7 +76,7 @@ class ChallengeImpl(
     override fun delete() {
         ensureValid()
         store.removeChallenge(identifier)
-        StatisticModifiedEvent.getHandlerList().unregister(this)
+        com.dumbdogdiner.sass.api.event.StatisticModifiedEvent.getHandlerList().unregister(this)
         invalid = true
     }
 
@@ -89,7 +85,7 @@ class ChallengeImpl(
     }
 
     @EventHandler
-    private fun onStatisticModified(event: StatisticModifiedEvent) {
+    private fun onStatisticModified(event: com.dumbdogdiner.sass.api.event.StatisticModifiedEvent) {
         ensureValid()
         if (event.statistic in associatedStatistics) {
             check(event.playerId)
@@ -108,7 +104,7 @@ class ChallengeImpl(
                 player.sendMessage("For completing the $name challenge, you have been awarded $reward miles!")
             }
             Bukkit.getPluginManager().callEvent(
-                ChallengeCompletedEvent(
+                com.dumbdogdiner.sass.api.event.ChallengeCompletedEvent(
                     this,
                     playerId
                 )

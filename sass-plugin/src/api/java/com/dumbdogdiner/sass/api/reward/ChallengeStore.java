@@ -2,7 +2,7 @@
  * Copyright (c) 2021 DumbDogDiner <dumbdogdiner.com>. All rights reserved.
  * Licensed under the MIT license, see LICENSE for more information.
  */
-package api.reward;
+package com.dumbdogdiner.sass.api.reward;
 
 import java.util.Set;
 import java.util.UUID;

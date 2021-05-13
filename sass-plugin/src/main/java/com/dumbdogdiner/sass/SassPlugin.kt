@@ -1,7 +1,5 @@
 package com.dumbdogdiner.sass
 
-import com.dumbdogdiner.sass.api.reward.RewardsAPIPlugin
-import com.dumbdogdiner.sass.api.stats.StatisticsAPIPlugin
 import com.dumbdogdiner.sass.command.ChallengesCommand
 import com.dumbdogdiner.sass.impl.reward.RewardsAPIPluginImpl
 import com.dumbdogdiner.sass.impl.stats.StatisticsAPIPluginImpl
@@ -20,8 +18,8 @@ class SassPlugin : JavaPlugin() {
 
         val servicesManager = Bukkit.getServicesManager()
 
-        servicesManager.register(StatisticsAPIPlugin::class.java, StatisticsAPIPluginImpl, this, ServicePriority.Lowest)
-        servicesManager.register(RewardsAPIPlugin::class.java, RewardsAPIPluginImpl, this, ServicePriority.Lowest)
+        servicesManager.register(com.dumbdogdiner.sass.api.stats.StatisticsAPIPlugin::class.java, StatisticsAPIPluginImpl, this, ServicePriority.Lowest)
+        servicesManager.register(com.dumbdogdiner.sass.api.reward.RewardsAPIPlugin::class.java, RewardsAPIPluginImpl, this, ServicePriority.Lowest)
     }
 
     override fun onEnable() {

@@ -1,4 +1,4 @@
 rootProject.name = "sass"
 
-include(":sass-api")
+include(":sass-com.dumbdogdiner.sass.api")
 include(":sass-plugin")
