@@ -1,8 +1,10 @@
 package com.dumbdogdiner.sass.impl.reward
 
 import com.dumbdogdiner.sass.api.reward.ChallengeStore
+import com.dumbdogdiner.sass.api.reward.Tier
+import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic
+import com.google.gson.JsonElement
 import org.bukkit.plugin.java.JavaPlugin
-import java.util.UUID
 import java.util.function.Function
 
 class ChallengeStoreImpl(private val plugin: JavaPlugin) :
@@ -15,13 +17,12 @@ class ChallengeStoreImpl(private val plugin: JavaPlugin) :
 
     override fun createChallenge(
         id: String,
-        name: Function<UUID, String?>,
-        reward: Function<UUID, Int>,
-        start: Function<UUID, Int>,
-        goal: Function<UUID, Int>,
-        progress: Function<UUID, Int>
-    ) = id !in challengeMap && run {
-        challengeMap[id] = ChallengeImpl(this, id, name, reward, start, goal, progress)
+        name: String,
+        tiers: Array<out Tier>,
+        statistic: Statistic,
+        progress: Function<JsonElement?, Int>
+    ): Boolean = id !in challengeMap && run {
+        challengeMap[id] = ChallengeImpl(this, id, name, tiers, statistic, progress)
         true
     }
 

@@ -5,7 +5,7 @@
 package com.dumbdogdiner.sass.api.reward;
 
 import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic;
-import java.util.Set;
+import com.google.gson.JsonElement;
 import java.util.UUID;
 import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
@@ -29,56 +29,43 @@ public interface Challenge {
     String getIdentifier();
 
     /**
-     * @return The function that determines the friendly name of this challenge for a given player, or null if the
-     * player should not see this challenge.
+     * @return The name of this challenge.
      */
     @NotNull
-    Function<@NotNull UUID, @Nullable String> getName();
+    String getName();
 
     /**
-     * @return The function that determines the reward for a given player. The function should return a nonzero value,
-     * indicating the number of miles to reward. Other values indicate that the reward is not attainable.
+     * @return The tiers for this challenge.
      */
     @NotNull
-    Function<@NotNull UUID, @NotNull Integer> getReward();
+    Tier[] getTiers();
 
     /**
-     * @return The function that determines the start of the range that this challenge spans for a given player.
+     * @return The statistic associated with this challenge.
      */
     @NotNull
-    Function<@NotNull UUID, @NotNull Integer> getStart();
+    Statistic getStatistic();
 
     /**
-     * @return The function that determines the end of the range that this challenge spans for a given player.
+     * @return The function that determines an integral value a given player has for this challenge. The value this
+     * function returns determines which tier the player is on.
      */
     @NotNull
-    Function<@NotNull UUID, @NotNull Integer> getGoal();
+    Function<@Nullable JsonElement, @NotNull Integer> getProgress();
 
     /**
-     * @return The function that determines an integral value a given player has for this challenge.
-     * @see Challenge#getStart()
-     * @see Challenge#getGoal()
+     * @param progress The progress level to find a tier for.
+     * @return The tier index for that progress level, or -1 if that level is beyond all tiers.
      */
-    @NotNull
-    Function<@NotNull UUID, @NotNull Integer> getProgress();
-
-    /**
-     * @param stat The statistic to add to the set of this challenge's associated statistics.
-     * @return True if the statistic was added, false if it was already associated.
-     */
-    boolean addAssociatedStatistic(@NotNull Statistic stat);
-
-    /**
-     * @param stat The statistic to add to the set of this challenge's associated statistics.
-     * @return True if the statistic was removed, false if it was never associated.
-     */
-    boolean removeAssociatedStatistic(@NotNull Statistic stat);
-
-    /**
-     * @return The set of statistics that this challenge is associated with. When any of these statistics are modified,
-     * this challenge checks if it has been completed.
-     */
-    Set<Statistic> getAssociatedStatistics();
+    default int getTierForProgress(int progress) {
+        var tiers = this.getTiers();
+        for (var i = 0; i < tiers.length; ++i) {
+            if (tiers[i].getThreshold() > progress) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     /**
      * Delete this challenge. Further use of this object is invalid.

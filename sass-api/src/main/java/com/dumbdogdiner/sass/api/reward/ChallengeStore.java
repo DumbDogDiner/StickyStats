@@ -4,8 +4,9 @@
  */
 package com.dumbdogdiner.sass.api.reward;
 
+import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic;
+import com.google.gson.JsonElement;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Function;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -29,21 +30,19 @@ public interface ChallengeStore {
     Challenge get(@NotNull String id);
 
     /**
-     * @param id The identifier of the new challenge.
+     * @param id {@link Challenge#getIdentifier()}
      * @param name {@link Challenge#getName()}
-     * @param reward {@link Challenge#getReward()}
-     * @param start {@link Challenge#getStart()}
-     * @param goal {@link Challenge#getGoal()}
+     * @param tiers {@link Challenge#getTiers()}
+     * @param statistic {@link Challenge#getStatistic()}
      * @param progress {@link Challenge#getProgress()}
      * @return True if a challenge was created, false if one already exists with that identifier.
      */
     boolean createChallenge(
         @NotNull String id,
-        @NotNull Function<@NotNull UUID, @Nullable String> name,
-        @NotNull Function<@NotNull UUID, @NotNull Integer> reward,
-        @NotNull Function<@NotNull UUID, @NotNull Integer> start,
-        @NotNull Function<@NotNull UUID, @NotNull Integer> goal,
-        @NotNull Function<@NotNull UUID, @NotNull Integer> progress
+        @NotNull String name,
+        @NotNull Tier[] tiers,
+        @NotNull Statistic statistic,
+        @NotNull Function<@Nullable JsonElement, @NotNull Integer> progress
     );
 
     /**

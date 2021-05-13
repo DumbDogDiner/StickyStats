@@ -15,22 +15,21 @@ object ChallengesCommand {
         val playerId = sender.uniqueId
         RewardsAPIPluginImpl.getAllStores().forEach { store ->
             store.allChallenges.forEach { challenge ->
-                val name = challenge.name.apply(playerId)
-                name?.let {
-                    sender.sendMessage(name)
-                    val reward = challenge.reward.apply(playerId)
-                    if (reward > 0) {
-                        val start = challenge.start.apply(playerId)
-                        val goal = challenge.goal.apply(playerId)
-                        val progress = challenge.progress.apply(playerId)
-                        val percentage = floor(100 * progress.toDouble() / (goal - start).toDouble())
-                        sender.sendMessage("  Reward: $reward Miles")
-                        sender.sendMessage("  Completion: $percentage%")
-                        sender.sendMessage("  Progress: $progress")
-                        sender.sendMessage("  Goal: $goal")
-                    } else {
-                        sender.sendMessage("  Unattainable")
-                    }
+                val progress = challenge.progress.apply(challenge.statistic.get(playerId))
+                val tierIndex = challenge.getTierForProgress(progress)
+                sender.sendMessage(challenge.name)
+                if (tierIndex == -1) {
+                    sender.sendMessage("  Completed")
+                } else {
+                    val currentTier = challenge.tiers[tierIndex]
+                    val start = if (tierIndex > 0) challenge.tiers[tierIndex - 1].threshold else 0
+                    val goal = currentTier.threshold
+                    val percentage = (100 * (progress - start).toDouble() / (goal - start)).toInt()
+                    sender.sendMessage("  Tier: ${tierIndex + 1}")
+                    sender.sendMessage("  Reward: ${currentTier.reward} Miles")
+                    sender.sendMessage("  Completion: $percentage%")
+                    sender.sendMessage("  Progress: $progress")
+                    sender.sendMessage("  Goal: $goal")
                 }
             }
         }
