@@ -7,7 +7,6 @@ package com.dumbdogdiner.sass.api.stats.store;
 import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents the set of statistics stored by a plugin.
@@ -27,14 +26,8 @@ public interface Store {
 
     /**
      * @param id The identifier of the statistic to fetch.
-     * @return The statistic with the given identifier, or null if none exists.
+     * @return The statistic with the given identifier.
      */
-    @Nullable
+    @NotNull
     Statistic get(@NotNull String id);
-
-    /**
-     * @param id The identifier of the new statistic.
-     * @return True if a new statistic was created, false if it already exists.
-     */
-    boolean create(@NotNull String id);
 }

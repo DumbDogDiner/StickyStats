@@ -29,9 +29,9 @@ public interface Statistic {
     Store getStore();
 
     /**
-     * Delete this statistic. Further use of this statistic must be avoided.
+     * Delete all values of this statistic.
      */
-    void delete();
+    void reset();
 
     /**
      * @param playerId The {@link UUID} of the player.
