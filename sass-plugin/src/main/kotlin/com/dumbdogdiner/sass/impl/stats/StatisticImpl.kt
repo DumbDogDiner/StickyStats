@@ -1,9 +1,8 @@
-package com.dumbdogdiner.sass.impl.stats.store.statistic
+package com.dumbdogdiner.sass.impl.stats
 
 import com.dumbdogdiner.sass.api.event.StatisticModifiedEvent
-import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic
+import com.dumbdogdiner.sass.api.stats.Statistic
 import com.dumbdogdiner.sass.db.SassStatistics
-import com.dumbdogdiner.sass.impl.stats.store.StoreImpl
 import com.google.common.collect.MapMaker
 import com.google.gson.JsonElement
 import org.bukkit.Bukkit

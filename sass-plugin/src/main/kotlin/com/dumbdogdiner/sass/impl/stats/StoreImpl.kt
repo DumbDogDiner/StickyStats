@@ -1,7 +1,6 @@
-package com.dumbdogdiner.sass.impl.stats.store
+package com.dumbdogdiner.sass.impl.stats
 
-import com.dumbdogdiner.sass.api.stats.store.Store
-import com.dumbdogdiner.sass.impl.stats.store.statistic.StatisticImpl
+import com.dumbdogdiner.sass.api.stats.Store
 import com.google.common.collect.MapMaker
 import org.bukkit.plugin.java.JavaPlugin
 

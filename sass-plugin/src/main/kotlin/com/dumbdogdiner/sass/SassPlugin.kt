@@ -1,11 +1,9 @@
 package com.dumbdogdiner.sass
 
-import com.dumbdogdiner.sass.api.reward.RewardsAPIPlugin
-import com.dumbdogdiner.sass.api.stats.StatisticsAPIPlugin
+import com.dumbdogdiner.sass.api.SassService
 import com.dumbdogdiner.sass.command.ChallengesCommand
 import com.dumbdogdiner.sass.db.SassStatistics
-import com.dumbdogdiner.sass.impl.reward.RewardsAPIPluginImpl
-import com.dumbdogdiner.sass.impl.stats.StatisticsAPIPluginImpl
+import com.dumbdogdiner.sass.impl.SassServiceImpl
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIConfig
 import kr.entree.spigradle.annotations.PluginMain
@@ -18,13 +16,14 @@ import java.net.URI
 
 @PluginMain
 class SassPlugin : JavaPlugin() {
+    lateinit var economy: Economy
+
     override fun onLoad() {
+        instance = this
+
         CommandAPI.onLoad(CommandAPIConfig())
 
-        val servicesManager = Bukkit.getServicesManager()
-
-        servicesManager.register(StatisticsAPIPlugin::class.java, StatisticsAPIPluginImpl, this, ServicePriority.Lowest)
-        servicesManager.register(RewardsAPIPlugin::class.java, RewardsAPIPluginImpl, this, ServicePriority.Lowest)
+        Bukkit.getServicesManager().register(SassService::class.java, SassServiceImpl, this, ServicePriority.Lowest)
     }
 
     override fun onEnable() {
@@ -32,7 +31,7 @@ class SassPlugin : JavaPlugin() {
         CommandAPI.registerCommand(ChallengesCommand::class.java)
 
         // we need to find an econ provider in order to deal out rewards
-        RewardsAPIPluginImpl.economy = server.servicesManager.getRegistration(Economy::class.java)?.provider
+        economy = server.servicesManager.getRegistration(Economy::class.java)?.provider
             ?: throw IllegalStateException("An economy provider is required for this plugin!")
 
         // read this plugin's config to get the database
@@ -50,7 +49,10 @@ class SassPlugin : JavaPlugin() {
             )
         }
 
-        SassStatistics.init(this, db)
-        ChallengesCommand.plugin = this
+        SassStatistics.init(db)
+    }
+
+    companion object {
+        lateinit var instance: SassPlugin
     }
 }

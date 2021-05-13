@@ -2,7 +2,7 @@ package com.dumbdogdiner.sass.impl.reward
 
 import com.dumbdogdiner.sass.api.reward.ChallengeStore
 import com.dumbdogdiner.sass.api.reward.Tier
-import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic
+import com.dumbdogdiner.sass.api.stats.Statistic
 import com.google.gson.JsonElement
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.function.Function

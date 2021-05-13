@@ -1,7 +1,7 @@
 package com.dumbdogdiner.sass.command
 
 import com.dumbdogdiner.sass.SassPlugin
-import com.dumbdogdiner.sass.impl.reward.RewardsAPIPluginImpl
+import com.dumbdogdiner.sass.impl.SassServiceImpl
 import dev.jorel.commandapi.annotations.Command
 import dev.jorel.commandapi.annotations.Default
 import org.bukkit.Bukkit
@@ -14,8 +14,8 @@ object ChallengesCommand {
     fun rewardsList(sender: Player) {
         sender.sendMessage("--- Challenges ---")
         val playerId = sender.uniqueId
-        Bukkit.getScheduler().runTaskAsynchronously(plugin) { ->
-            RewardsAPIPluginImpl.getAllStores().forEach { store ->
+        Bukkit.getScheduler().runTaskAsynchronously(SassPlugin.instance) { ->
+            SassServiceImpl.getAllChallengeStores().forEach { store ->
                 store.allChallenges.forEach { challenge ->
                     val progress = challenge.progress.apply(challenge.statistic.get(playerId))
                     val tierIndex = challenge.getTierForProgress(progress)
@@ -37,6 +37,4 @@ object ChallengesCommand {
             }
         }
     }
-
-    lateinit var plugin: SassPlugin
 }

@@ -4,14 +4,13 @@
  */
 package com.dumbdogdiner.sass.api.reward;
 
-import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic;
+import com.dumbdogdiner.sass.api.stats.Statistic;
 import com.google.gson.JsonElement;
+import java.util.Set;
+import java.util.function.Function;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
-import java.util.function.Function;
 
 /**
  * Represents the challenges for a plugin.

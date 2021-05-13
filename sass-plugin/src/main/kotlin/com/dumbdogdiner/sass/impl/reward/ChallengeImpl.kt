@@ -1,10 +1,11 @@
 package com.dumbdogdiner.sass.impl.reward
 
+import com.dumbdogdiner.sass.SassPlugin
 import com.dumbdogdiner.sass.api.event.ChallengeCompletedEvent
 import com.dumbdogdiner.sass.api.event.StatisticModifiedEvent
 import com.dumbdogdiner.sass.api.reward.Challenge
 import com.dumbdogdiner.sass.api.reward.Tier
-import com.dumbdogdiner.sass.api.stats.store.statistic.Statistic
+import com.dumbdogdiner.sass.api.stats.Statistic
 import com.google.gson.JsonElement
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -81,7 +82,7 @@ class ChallengeImpl(
                     val playerId = event.playerId
                     val player = Bukkit.getOfflinePlayer(playerId)
                     val reward = tiers[oldTier].reward
-                    RewardsAPIPluginImpl.economy.depositPlayer(player, reward.toDouble())
+                    SassPlugin.instance.economy.depositPlayer(player, reward.toDouble())
                     if (player is Player) {
                         player.sendMessage("For completing the $name challenge, you have been awarded $reward miles!")
                     }

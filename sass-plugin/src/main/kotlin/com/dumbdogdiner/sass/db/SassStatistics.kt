@@ -1,7 +1,7 @@
 package com.dumbdogdiner.sass.db
 
 import com.dumbdogdiner.sass.SassPlugin
-import com.dumbdogdiner.sass.impl.stats.store.statistic.StatisticImpl
+import com.dumbdogdiner.sass.impl.stats.StatisticImpl
 import com.dumbdogdiner.sass.util.fromCbor
 import com.dumbdogdiner.sass.util.toCbor
 import com.google.gson.JsonElement
@@ -66,13 +66,13 @@ object SassStatistics : Table() {
         deleteWhere { selector(stat) }
     }
 
-    fun init(plugin: SassPlugin, db: Database) {
+    fun init(db: Database) {
         this.db = db
 
         transaction(db) {
             addLogger(object : SqlLogger {
                 override fun log(context: StatementContext, transaction: Transaction) {
-                    plugin.logger.info("[SQL] ${context.expandArgs(transaction)}")
+                    SassPlugin.instance.logger.info("[SQL] ${context.expandArgs(transaction)}")
                 }
             })
             if (!exists()) {
