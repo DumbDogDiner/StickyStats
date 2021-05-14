@@ -61,29 +61,29 @@ private val StatisticImpl.serverName
     get() = if (this.store.isGlobal) SassPlugin.instance.serverName else null
 
 private fun selectStatPool(stat: StatisticImpl) =
-    StatPools.pluginName eq stat.pluginName and (StatPools.statName eq stat.identifier)
+    StatPools.pluginNameCol eq stat.pluginName and (StatPools.statNameCol eq stat.identifier)
 
 private fun selectStatMap(stat: StatisticImpl, statPoolId: Int) =
-    StatMaps.statPoolId eq statPoolId and (StatMaps.serverName eq stat.serverName)
+    StatMaps.statPoolIdCol eq statPoolId and (StatMaps.serverNameCol eq stat.serverName)
 
 private fun selectStatEntries(statMapId: Int, playerId: UUID) =
-    StatEntries.statMapId eq statMapId and (StatEntries.playerId eq playerId)
+    StatEntries.statMapIdCol eq statMapId and (StatEntries.playerIdCol eq playerId)
 
-private fun getStatPoolAndMap(stat: StatisticImpl): Pair<Int, Int>? {
-    // Check if there's a stat pool for this statistic
-    val statPoolId = StatPools.select(selectStatPool(stat)).firstOrNull()?.let { it[StatPools.statPoolId] }
-        ?: return null
-    // Check if there's a stat map for this server
-    val statMapId = StatMaps.select(selectStatMap(stat, statPoolId)).firstOrNull()?.let { it[StatMaps.statMapId] }
-        ?: return null
-    return statPoolId to statMapId
+private fun getStatPoolId(stat: StatisticImpl) = stat.cachedStatPool ?: run {
+    StatPools.select(selectStatPool(stat)).singleOrNull()?.let { it[StatPools.statPoolIdCol] }
+        ?.also { stat.cachedStatPool = it }
+}
+
+private fun getStatMapId(stat: StatisticImpl, statPoolId: Int) = stat.cachedStatMap ?: run {
+    StatMaps.select(selectStatMap(stat, statPoolId)).singleOrNull()?.let { it[StatMaps.statMapIdCol] }
+        ?.also { stat.cachedStatMap = it }
 }
 
 fun databaseGet(stat: StatisticImpl, playerId: UUID): JsonElement? {
     return loggedTransaction {
-        val (_, statMapId) = getStatPoolAndMap(stat) ?: return@loggedTransaction null
+        val statMapId = getStatPoolId(stat)?.let { getStatMapId(stat, it) } ?: return@loggedTransaction null
         // Check if there's an entry for the player
-        val valueBlob = StatEntries.select(selectStatEntries(statMapId, playerId)).firstOrNull()?.let { it[StatEntries.statValue] }
+        val valueBlob = StatEntries.select(selectStatEntries(statMapId, playerId)).singleOrNull()?.let { it[StatEntries.statValueCol] }
             ?: return@loggedTransaction null
         valueBlob.bytes.fromCbor()
     }
@@ -91,28 +91,28 @@ fun databaseGet(stat: StatisticImpl, playerId: UUID): JsonElement? {
 
 fun databaseSet(stat: StatisticImpl, playerId: UUID, value: JsonElement) {
     loggedTransaction {
-        // Get a pool ID
-        val statPoolId = StatPools.select(selectStatPool(stat)).firstOrNull()?.let { it[StatPools.statPoolId] }
+        // Get a pool ID, or make a new one
+        val statPoolId = getStatPoolId(stat)
             ?: StatPools.insert {
-                it[pluginName] = stat.pluginName
-                it[statName] = stat.identifier
-            }[StatPools.statPoolId]
-        // Get a map ID
-        val statMapId = StatMaps.select(selectStatMap(stat, statPoolId)).firstOrNull()?.let { it[StatMaps.statMapId] }
+                it[pluginNameCol] = stat.pluginName
+                it[statNameCol] = stat.identifier
+            }[StatPools.statPoolIdCol].also { stat.cachedStatPool = it }
+        // Get a map ID, or make a new one
+        val statMapId = getStatMapId(stat, statPoolId)
             ?: StatMaps.insert {
-                it[StatMaps.statPoolId] = statPoolId
-                it[serverName] = stat.serverName
-            }[StatMaps.statMapId]
+                it[statPoolIdCol] = statPoolId
+                it[serverNameCol] = stat.serverName
+            }[StatMaps.statMapIdCol].also { stat.cachedStatMap = it }
         // Update or create an entry for the value
         val valueBlob = ExposedBlob(value.toCbor())
         val updateResult = StatEntries.update({ selectStatEntries(statMapId, playerId) }) {
-            it[statValue] = valueBlob
+            it[statValueCol] = valueBlob
         }
         if (updateResult == 0) {
             StatEntries.insert {
-                it[StatEntries.statMapId] = statMapId
-                it[StatEntries.playerId] = playerId
-                it[statValue] = valueBlob
+                it[statMapIdCol] = statMapId
+                it[playerIdCol] = playerId
+                it[statValueCol] = valueBlob
             }
         }
     }
@@ -120,15 +120,18 @@ fun databaseSet(stat: StatisticImpl, playerId: UUID, value: JsonElement) {
 
 fun databaseRemove(stat: StatisticImpl, playerId: UUID): Boolean {
     return loggedTransaction {
-        val (statPoolId, statMapId) = getStatPoolAndMap(stat) ?: return@loggedTransaction false
+        val statPoolId = getStatPoolId(stat) ?: return@loggedTransaction false
+        val statMapId = getStatMapId(stat, statPoolId) ?: return@loggedTransaction false
         val entryDeleteResult = StatEntries.deleteWhere { selectStatEntries(statMapId, playerId) }
         if (entryDeleteResult != 0) {
             // If that was the last entry in this map, delete the map
-            if (StatEntries.select { StatEntries.statMapId eq statMapId }.none()) {
-                StatMaps.deleteWhere { StatMaps.statMapId eq statMapId }
+            if (StatEntries.select { StatEntries.statMapIdCol eq statMapId }.none()) {
+                stat.cachedStatMap = null
+                StatMaps.deleteWhere { StatMaps.statMapIdCol eq statMapId }
                 // If that was the last map in this pool, delete the pool
-                if (StatMaps.select { StatMaps.statPoolId eq statPoolId }.none()) {
-                    StatPools.deleteWhere { StatPools.statPoolId eq statPoolId }
+                if (StatMaps.select { StatMaps.statPoolIdCol eq statPoolId }.none()) {
+                    stat.cachedStatPool = null
+                    StatPools.deleteWhere { StatPools.statPoolIdCol eq statPoolId }
                 }
             }
         }
@@ -138,13 +141,16 @@ fun databaseRemove(stat: StatisticImpl, playerId: UUID): Boolean {
 
 fun databaseReset(stat: StatisticImpl) {
     loggedTransaction {
-        val (statPoolId, statMapId) = getStatPoolAndMap(stat) ?: return@loggedTransaction
-        val entryDeleteResult = StatEntries.deleteWhere { StatEntries.statMapId eq statMapId }
+        val statPoolId = getStatPoolId(stat) ?: return@loggedTransaction
+        val statMapId = getStatMapId(stat, statPoolId) ?: return@loggedTransaction
+        val entryDeleteResult = StatEntries.deleteWhere { StatEntries.statMapIdCol eq statMapId }
         if (entryDeleteResult != 0) {
-            StatMaps.deleteWhere { StatMaps.statMapId eq statMapId }
+            stat.cachedStatMap = null
+            StatMaps.deleteWhere { StatMaps.statMapIdCol eq statMapId }
             // If that was the last map in this pool, delete the pool
-            if (StatMaps.select { StatMaps.statPoolId eq statPoolId }.none()) {
-                StatPools.deleteWhere { StatPools.statPoolId eq statPoolId }
+            if (StatMaps.select { StatMaps.statPoolIdCol eq statPoolId }.none()) {
+                stat.cachedStatPool = null
+                StatPools.deleteWhere { StatPools.statPoolIdCol eq statPoolId }
             }
         }
     }

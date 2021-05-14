@@ -16,6 +16,8 @@ class StatisticImpl(
     private val store: StoreImpl,
 ) : Statistic {
     private val valueMap = MapMaker().weakValues().makeMap<UUID, CachedElement>()
+    var cachedStatPool = null as Int?
+    var cachedStatMap = null as Int?
 
     override fun getIdentifier() = identifier
 
