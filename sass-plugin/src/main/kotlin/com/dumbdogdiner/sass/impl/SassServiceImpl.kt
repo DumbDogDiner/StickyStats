@@ -4,6 +4,7 @@ import com.dumbdogdiner.sass.api.SassService
 import com.dumbdogdiner.sass.api.event.StatisticModifiedEvent
 import com.dumbdogdiner.sass.api.reward.Tier
 import com.dumbdogdiner.sass.api.stats.Statistic
+import com.dumbdogdiner.sass.api.stats.Store
 import com.dumbdogdiner.sass.impl.reward.ChallengeImpl
 import com.dumbdogdiner.sass.impl.stats.StoreImpl
 import com.google.common.collect.MapMaker
@@ -17,15 +18,15 @@ import java.util.function.Function
 
 object SassServiceImpl : SassService, Listener {
     // weak-value map of stores
-    private val storeMap = MapMaker().weakValues().makeMap<String, StoreImpl>()
+    private val storeMap = MapMaker().weakValues().makeMap<JavaPlugin, StoreImpl>()
 
     // set of all registered challenges
     private val challenges = mutableSetOf<ChallengeImpl>()
     // map of statistics to connected challenges
     private val statisticToChallengesMap = WeakHashMap<Statistic, MutableList<ChallengeImpl>>()
 
-    override fun getStore(plugin: JavaPlugin, server: Server): StoreImpl =
-        storeMap.getOrPut(statStoreKey(plugin, server)) { StoreImpl(plugin, server) }
+    override fun getStore(plugin: JavaPlugin): StoreImpl =
+        storeMap.getOrPut(plugin) { StoreImpl(plugin) }
 
     override fun createChallenge(
         name: String,
@@ -38,8 +39,6 @@ object SassServiceImpl : SassService, Listener {
         statisticToChallengesMap.getOrPut(statistic) { mutableListOf() } += result
         return result
     }
-
-    private fun statStoreKey(plugin: JavaPlugin, server: Server) = "${plugin.name}:${server.name}"
 
     @EventHandler
     private fun onStatisticModified(event: StatisticModifiedEvent) {

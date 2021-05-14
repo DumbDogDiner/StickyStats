@@ -15,8 +15,7 @@ fun JsonElement.toCbor(): ByteArray {
     val node = JsonFactory(JsonMapper()).createParser(toString()).use { it.readValueAsTree<JsonNode> () }
     // serialize that value as CBOR
     val output = ByteArrayOutputStream()
-    val gen = CBORFactory(CBORMapper()).createGenerator(output)
-    gen.codec.writeTree(gen, node)
+    CBORFactory(CBORMapper()).createGenerator(output).use { it.codec.writeTree(it, node) }
     // return encoded data
     return output.toByteArray()
 }

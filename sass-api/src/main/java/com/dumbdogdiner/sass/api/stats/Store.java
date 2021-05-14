@@ -19,12 +19,6 @@ public interface Store {
     JavaPlugin getPlugin();
 
     /**
-     * @return The server this store belongs to.
-     */
-    @NotNull
-    Server getServer();
-
-    /**
      * @param id The identifier of the statistic to fetch.
      * @return The statistic with the given identifier.
      */

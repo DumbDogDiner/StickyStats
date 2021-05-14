@@ -4,6 +4,7 @@ import com.dumbdogdiner.sass.api.SassService
 import com.dumbdogdiner.sass.command.ChallengesCommand
 import com.dumbdogdiner.sass.db.SassStatistics
 import com.dumbdogdiner.sass.impl.SassServiceImpl
+import com.dumbdogdiner.sass.util.fetchServerName
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIConfig
 import kr.entree.spigradle.annotations.PluginMain
@@ -17,6 +18,7 @@ import java.net.URI
 @PluginMain
 class SassPlugin : JavaPlugin() {
     lateinit var economy: Economy
+    lateinit var serverName: String
 
     override fun onLoad() {
         instance = this
@@ -33,6 +35,8 @@ class SassPlugin : JavaPlugin() {
         // we need to find an econ provider in order to deal out rewards
         economy = server.servicesManager.getRegistration(Economy::class.java)?.provider
             ?: throw IllegalStateException("An economy provider is required for this plugin!")
+
+        serverName = fetchServerName()
 
         // read this plugin's config to get the database
         val db = config.let {

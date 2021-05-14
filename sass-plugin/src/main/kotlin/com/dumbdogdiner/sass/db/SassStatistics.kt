@@ -35,7 +35,7 @@ object SassStatistics : Table() {
 
     private fun selector(stat: StatisticImpl) = (identifierColumn eq stat.identifier) and
             (pluginColumn eq stat.store.plugin.name) and
-            (serverColumn eq stat.store.server.name)
+            (serverColumn eq SassPlugin.instance.serverName)
 
     private fun selector(stat: StatisticImpl, playerId: UUID) = selector(stat) and (playerIdColumn eq playerId)
 
@@ -46,7 +46,7 @@ object SassStatistics : Table() {
         if (updateResult == 0) insert {
             it[identifierColumn] = stat.identifier
             it[pluginColumn] = stat.store.plugin.name
-            it[serverColumn] = stat.store.server.name
+            it[serverColumn] = SassPlugin.instance.serverName
             it[playerIdColumn] = playerId
             it[dataColumn] = ExposedBlob(data.toCbor())
         }

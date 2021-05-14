@@ -33,11 +33,10 @@ public interface SassService {
 
     /**
      * @param plugin The plugin to get statistics for.
-     * @param server The server to get statistics for.
      * @return The statistics store attached to this plugin instance.
      */
     @NotNull
-    Store getStore(@NotNull JavaPlugin plugin, @NotNull Server server);
+    Store getStore(@NotNull JavaPlugin plugin);
 
     /**
      * @param name {@link Challenge#getName()}
