@@ -29,7 +29,7 @@ object SassServiceImpl : SassService, Listener {
         globalStoreMap.getOrPut(plugin) { StoreImpl(plugin, true) }
 
     override fun getServerStore(plugin: JavaPlugin) =
-        SassPlugin.instance.serverName?.let { serverStoreMap.getOrPut(plugin) { StoreImpl(plugin, true) } }
+        SassPlugin.instance.serverName?.let { serverStoreMap.getOrPut(plugin) { StoreImpl(plugin, false) } }
 
     override fun createChallenge(
         name: String,
