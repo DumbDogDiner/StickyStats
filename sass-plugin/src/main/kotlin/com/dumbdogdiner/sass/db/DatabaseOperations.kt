@@ -37,7 +37,7 @@ fun databaseInit(database: Database) {
     db = database
     logger = object : SqlLogger {
         override fun log(context: StatementContext, transaction: Transaction) {
-            SassPlugin.instance.logger.info(context.expandArgs(transaction))
+            SassPlugin.instance.logger.info("[SQL] ${context.expandArgs(transaction)}")
         }
     }
 
