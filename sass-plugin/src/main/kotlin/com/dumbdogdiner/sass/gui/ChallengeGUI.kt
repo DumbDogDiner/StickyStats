@@ -26,19 +26,23 @@ class ChallengeGUI(private val player: Player) : GUI(6, "Challenges", SassPlugin
         player.playSound(player.location, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F)
 
     private fun updateEntries() {
-        entries = SassServiceImpl.allChallenges.map { challenge ->
-            val progress = challenge.progress.apply(challenge.statistic[player.uniqueId])
-            val tierIndex = challenge.getTierForProgress(progress)
-            val tierState = if (tierIndex >= 0) ChallengeGUIEntryTierState(
-                tierIndex,
-                if (tierIndex == 0) null else challenge.tiers[tierIndex - 1],
-                challenge.tiers[tierIndex],
-                progress
-            ) else null
-            ChallengeGUIEntry(challenge.name, tierState)
-        }.toTypedArray()
+        Bukkit.getScheduler().runTaskAsynchronously(SassPlugin.instance) { ->
+            synchronized(entries) {
+                entries = SassServiceImpl.allChallenges.map { challenge ->
+                    val progress = challenge.progress.apply(challenge.statistic[player.uniqueId])
+                    val tierIndex = challenge.getTierForProgress(progress)
+                    val tierState = if (tierIndex >= 0) ChallengeGUIEntryTierState(
+                        tierIndex,
+                        if (tierIndex == 0) null else challenge.tiers[tierIndex - 1],
+                        challenge.tiers[tierIndex],
+                        progress
+                    ) else null
+                    ChallengeGUIEntry(challenge.name, tierState)
+                }.toTypedArray()
 
-        redrawPage()
+                Bukkit.getScheduler().runTask(SassPlugin.instance, this::redrawPage)
+            }
+        }
     }
 
     private fun redrawPage() {
