@@ -17,6 +17,15 @@ repositories {
     // Using these repositories for CommandAPI
     maven("https://repo.codemc.org/repository/maven-public")
     maven("https://raw.githubusercontent.com/JorelAli/CommandAPI/mvn-repo/")
+    // StickyAPI repo
+    maven {
+        credentials {
+            username = "${property("ghUser")}"
+            password = "${property("ghPass")}"
+        }
+        url = uri("https://maven.pkg.github.com/DumbDogDiner/StickyAPI/")
+    }
+    maven("https://raw.githubusercontent.com/JorelAli/CommandAPI/mvn-repo/")
 }
 
 dependencies {
@@ -38,6 +47,9 @@ dependencies {
     // Add Jackson JSON and CBOR for converting between the two formats
     implementation("com.fasterxml.jackson.core:jackson-core:2.12.3")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.12.3")
+    // Add StickyAPI for GUI
+    implementation("com.dumbdogdiner:stickyapi-bukkit:3.0.2")
+    implementation("com.dumbdogdiner:stickyapi-common:3.0.2")
 }
 
 tasks {
