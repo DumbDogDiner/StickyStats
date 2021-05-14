@@ -48,8 +48,8 @@ private fun fetchServerNameViaBungee(): String {
     }
 }
 
-fun fetchServerName() = if (Bukkit.spigot().spigotConfig.getBoolean("settings.bungeecord", false)) {
-    fetchServerNameViaBungee()
-} else {
-    "<fallback>"
+fun fetchServerName() {
+    if (Bukkit.spigot().spigotConfig.getBoolean("settings.bungeecord", false)) {
+        SassPlugin.instance.serverName = fetchServerNameViaBungee()
+    }
 }

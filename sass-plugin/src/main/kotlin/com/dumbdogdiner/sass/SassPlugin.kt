@@ -2,7 +2,7 @@ package com.dumbdogdiner.sass
 
 import com.dumbdogdiner.sass.api.SassService
 import com.dumbdogdiner.sass.command.ChallengesCommand
-import com.dumbdogdiner.sass.db.SassStatistics
+import com.dumbdogdiner.sass.db.databaseInit
 import com.dumbdogdiner.sass.impl.SassServiceImpl
 import com.dumbdogdiner.sass.util.fetchServerName
 import dev.jorel.commandapi.CommandAPI
@@ -18,7 +18,7 @@ import java.net.URI
 @PluginMain
 class SassPlugin : JavaPlugin() {
     lateinit var economy: Economy
-    lateinit var serverName: String
+    var serverName = null as String?
 
     override fun onLoad() {
         instance = this
@@ -36,7 +36,7 @@ class SassPlugin : JavaPlugin() {
         economy = server.servicesManager.getRegistration(Economy::class.java)?.provider
             ?: throw IllegalStateException("An economy provider is required for this plugin!")
 
-        serverName = fetchServerName()
+        fetchServerName()
 
         // read this plugin's config to get the database
         val db = config.let {
@@ -53,7 +53,7 @@ class SassPlugin : JavaPlugin() {
             )
         }
 
-        SassStatistics.init(db)
+        databaseInit(db)
 
         Bukkit.getPluginManager().registerEvents(SassServiceImpl, this)
     }

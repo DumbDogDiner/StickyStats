@@ -9,12 +9,12 @@ import com.dumbdogdiner.sass.api.reward.Tier;
 import com.dumbdogdiner.sass.api.stats.Statistic;
 import com.dumbdogdiner.sass.api.stats.Store;
 import com.google.gson.JsonElement;
-import java.util.function.Function;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Function;
 
 public interface SassService {
     /**
@@ -33,10 +33,17 @@ public interface SassService {
 
     /**
      * @param plugin The plugin to get statistics for.
-     * @return The statistics store attached to this plugin instance.
+     * @return The global statistics store attached to this plugin instance.
      */
     @NotNull
-    Store getStore(@NotNull JavaPlugin plugin);
+    Store getGlobalStore(@NotNull JavaPlugin plugin);
+
+    /**
+     * @param plugin The plugin to get statistics for.
+     * @return The per-server statistics store attached to this plugin instance, or null if BungeeCord is not detected.
+     */
+    @Nullable
+    Store getServerStore(@NotNull JavaPlugin plugin);
 
     /**
      * @param name {@link Challenge#getName()}

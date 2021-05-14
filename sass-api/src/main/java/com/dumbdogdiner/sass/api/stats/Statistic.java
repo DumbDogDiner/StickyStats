@@ -6,9 +6,10 @@ package com.dumbdogdiner.sass.api.stats;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 /**
  * Represents a statistic.
