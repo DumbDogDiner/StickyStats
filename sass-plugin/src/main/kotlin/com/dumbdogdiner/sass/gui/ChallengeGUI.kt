@@ -3,6 +3,7 @@ package com.dumbdogdiner.sass.gui
 import com.dumbdogdiner.sass.SassPlugin
 import com.dumbdogdiner.sass.api.reward.Tier
 import com.dumbdogdiner.sass.impl.SassServiceImpl
+import com.dumbdogdiner.sass.util.romanNumeral
 import com.dumbdogdiner.stickyapi.bukkit.gui.GUI
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -57,16 +58,16 @@ class ChallengeGUI(private val player: Player) : GUI(6, "Challenges", SassPlugin
         (pageNumber * SLOTS_PER_PAGE until min((pageNumber + 1) * SLOTS_PER_PAGE, entries.size)).forEach { i ->
             addSlot(i % 9, (i / 9) % 5, ItemStack(Material.STONE).apply {
                 val entry = entries[i]
-                itemMeta = itemMeta.apply { setDisplayName(entry.name) }
                 entry.tierState?.let { tierState ->
+                    itemMeta = itemMeta.apply { setDisplayName("${entry.name} ${(tierState.index + 1).romanNumeral()}") }
                     lore = listOf(
-                        "Tier: ${tierState.index + 1}",
                         "Reward: ${tierState.current.reward}",
                         "Completion: ${tierState.percentage}",
                         "Progress: ${tierState.progress}",
                         "Goal: ${tierState.goal}",
                     )
                 } ?: run {
+                    itemMeta = itemMeta.apply { setDisplayName(entry.name) }
                     lore = listOf("Completed")
                 }
             })
