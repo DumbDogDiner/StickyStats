@@ -7,6 +7,7 @@ import com.dumbdogdiner.sass.api.reward.Challenge
 import com.dumbdogdiner.sass.api.reward.Tier
 import com.dumbdogdiner.sass.api.stats.Statistic
 import com.dumbdogdiner.sass.impl.SassServiceImpl
+import com.dumbdogdiner.sass.translation.L
 import com.dumbdogdiner.sass.util.romanNumeral
 import com.google.gson.JsonElement
 import org.bukkit.Bukkit
@@ -45,7 +46,8 @@ class ChallengeImpl(
                 val reward = tiers[oldTier].reward
                 SassPlugin.instance.economy.depositPlayer(player, reward.toDouble())
                 if (player is Player) {
-                    player.sendMessage("For completing the $name ${(oldTier + 1).romanNumeral()} challenge, you have been awarded $reward miles!")
+                    val tier = (oldTier + 1).romanNumeral()
+                    player.sendMessage(L.challengeCompleted("name" to name, "tier" to tier, "reward" to reward))
                 }
                 Bukkit.getPluginManager().callEvent(ChallengeCompletedEvent(this, playerId))
             }
