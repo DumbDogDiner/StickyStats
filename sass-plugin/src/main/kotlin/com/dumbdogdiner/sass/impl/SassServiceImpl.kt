@@ -39,8 +39,23 @@ object SassServiceImpl : SassService, Listener {
         statistic: Statistic,
         progress: Function<JsonElement?, Int>
     ): ChallengeImpl {
+        // Check the tiers to make sure there's nothing weird going on... All tier thresholds should be positive and in
+        // ascending order, and no rewards should be negative.
+        var lastThreshold = 0
+        for ((i, tier) in tiers.withIndex()) {
+            if (tier.threshold < lastThreshold) {
+                throw IllegalArgumentException("Tier ${i + 1} has a lower threshold than the one before it")
+            }
+            if (tier.reward < 0) {
+                throw IllegalArgumentException("Tier ${i + 1} has a negative reward")
+            }
+            lastThreshold = tier.threshold
+        }
+        // Create the new challenge
         val result = ChallengeImpl(name, icon, tiers, statistic, progress)
+        // Add it to the set of challenges
         challenges += result
+        // Add it to a list of challenges connected to a statistic
         statisticToChallengesMap.getOrPut(statistic) { mutableListOf() } += result
         return result
     }
@@ -48,7 +63,9 @@ object SassServiceImpl : SassService, Listener {
     @EventHandler
     private fun onStatisticModified(event: StatisticModifiedEvent) {
         statisticToChallengesMap[event.statistic]?.let { challenges ->
-            challenges.forEach { it.check(event) }
+            for (challenge in challenges) {
+                challenge.check(event)
+            }
         }
     }
 

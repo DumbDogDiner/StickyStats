@@ -6,6 +6,9 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import kotlin.reflect.KProperty
 
+/**
+ * Handles reading and caching of the stat pool ID for a statistic.
+ */
 class CachedStatPool {
     private var cachedValue = null as CachedNullable<Int>?
 
@@ -20,10 +23,14 @@ class CachedStatPool {
     }
 
     operator fun setValue(stat: StatisticImpl, property: KProperty<*>, value: Int?) {
+        // override the cache
         cachedValue = value?.let(::CachedNullable)
     }
 }
 
+/**
+ * Handles reading and caching of the stat map ID for a statistic.
+ */
 class CachedStatMap {
     private var cachedValue = null as CachedNullable<Int>?
 
@@ -40,6 +47,7 @@ class CachedStatMap {
     }
 
     operator fun setValue(stat: StatisticImpl, property: KProperty<*>, value: Int?) {
+        // override the cache
         cachedValue = value?.let(::CachedNullable)
     }
 }

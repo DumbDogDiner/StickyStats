@@ -2,6 +2,9 @@ package com.dumbdogdiner.sass.translation
 
 import org.bukkit.configuration.file.YamlConfiguration
 
+/**
+ * The language object.
+ */
 object L {
     // TODO multiple language support
     internal val messageFile = (this::class.java.getResourceAsStream("messages.yml")

@@ -12,7 +12,7 @@ class TranslatableMessage(private val template: String) {
         val argMap = args.toMap()
         val result = StringBuilder()
         var inTemplate = false
-        (1 until parts.size).forEach { i ->
+        for (i in 1 until parts.size) {
             if (inTemplate) {
                 val name = template.substring(parts[i - 1] + 1 until parts[i] - 1)
                 argMap[name]?.let(result::append) ?: result.append("{$name}")

@@ -9,6 +9,9 @@ import org.bukkit.plugin.messaging.PluginMessageListener
 
 private const val BUNGEECORD_CHANNEL = "BungeeCord"
 
+/**
+ * Gets the server name by communicating with BungeeCord.
+ */
 private fun fetchServerNameViaBungee(): String {
     // create channel to transmit result
     val result = Channel<String>()

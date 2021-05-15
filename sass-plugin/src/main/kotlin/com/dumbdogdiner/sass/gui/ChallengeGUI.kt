@@ -117,6 +117,9 @@ class ChallengeGUI(private val player: Player) : GUI(6, L.challengesGuiTitle(), 
         }
     }
 
+    /**
+     * Redraw the current page.
+     */
     private fun redrawPage() {
         if (this.pageNumber > this.maxPageNumber) {
             this.pageNumber = this.maxPageNumber
@@ -126,7 +129,7 @@ class ChallengeGUI(private val player: Player) : GUI(6, L.challengesGuiTitle(), 
         val end = start + SLOTS_PER_PAGE
 
         for (i in start until end) {
-            removeSlot(i % 9, (i / 9) % 5)
+            this.removeSlot(i % 9, (i / 9) % 5)
         }
 
         for (i in start until min(end, this.entries.size)) {
