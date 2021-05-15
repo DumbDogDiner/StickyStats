@@ -2,6 +2,8 @@ package com.dumbdogdiner.sass.impl.stats
 
 import com.dumbdogdiner.sass.SassPlugin
 import com.dumbdogdiner.sass.api.event.StatisticModifiedEvent
+import com.dumbdogdiner.sass.api.event.StatisticRemovedEvent
+import com.dumbdogdiner.sass.api.event.StatisticResetEvent
 import com.dumbdogdiner.sass.api.stats.Statistic
 import com.dumbdogdiner.sass.db.CachedStatMap
 import com.dumbdogdiner.sass.db.CachedStatPool
@@ -35,6 +37,7 @@ class StatisticImpl(
 
     override fun reset() {
         databaseReset(this)
+        Bukkit.getPluginManager().callEvent(StatisticResetEvent(this))
     }
 
     override fun get(playerId: UUID) = (valueMap[playerId] ?: run {
@@ -61,8 +64,14 @@ class StatisticImpl(
     }
 
     override fun remove(playerId: UUID): Boolean {
+        val oldValue = this[playerId]
         valueMap.remove(playerId)
-        return databaseRemove(this, playerId)
+        return if (databaseRemove(this, playerId)) {
+            Bukkit.getPluginManager().callEvent(StatisticRemovedEvent(this, playerId, oldValue!!))
+            true
+        } else {
+            false
+        }
     }
 
     private class CachedElement(val element: JsonElement?)
