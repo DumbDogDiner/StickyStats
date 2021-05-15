@@ -1,7 +1,10 @@
 package com.dumbdogdiner.sass.impl.stats
 
+import com.dumbdogdiner.sass.SassPlugin
 import com.dumbdogdiner.sass.api.event.StatisticModifiedEvent
 import com.dumbdogdiner.sass.api.stats.Statistic
+import com.dumbdogdiner.sass.db.CachedStatMap
+import com.dumbdogdiner.sass.db.CachedStatPool
 import com.dumbdogdiner.sass.db.databaseGet
 import com.dumbdogdiner.sass.db.databaseRemove
 import com.dumbdogdiner.sass.db.databaseReset
@@ -16,8 +19,15 @@ class StatisticImpl(
     private val store: StoreImpl,
 ) : Statistic {
     private val valueMap = MapMaker().weakValues().makeMap<UUID, CachedElement>()
-    var cachedStatPool = null as Int?
-    var cachedStatMap = null as Int?
+
+    val statPoolIdDelegate = CachedStatPool()
+    val statMapIdDelegate = CachedStatMap()
+
+    val statPoolId by this.statPoolIdDelegate
+    val statMapId by this.statMapIdDelegate
+
+    val pluginName get() = this.store.plugin.name
+    val serverName get() = if (this.store.isGlobal) SassPlugin.instance.serverName else null
 
     override fun getIdentifier() = identifier
 
