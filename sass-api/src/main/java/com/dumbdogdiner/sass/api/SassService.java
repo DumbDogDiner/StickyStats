@@ -9,12 +9,12 @@ import com.dumbdogdiner.sass.api.reward.Tier;
 import com.dumbdogdiner.sass.api.stats.Statistic;
 import com.dumbdogdiner.sass.api.stats.Store;
 import com.google.gson.JsonElement;
+import java.util.function.Function;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
 
 public interface SassService {
     /**
@@ -47,6 +47,7 @@ public interface SassService {
 
     /**
      * @param name {@link Challenge#getName()}
+     * @param icon {@link Challenge#getIcon()}
      * @param tiers {@link Challenge#getTiers()}
      * @param statistic {@link Challenge#getStatistic()}
      * @param progress {@link Challenge#getProgress()}
@@ -55,6 +56,7 @@ public interface SassService {
     @NotNull
     Challenge createChallenge(
         @NotNull String name,
+        @NotNull ItemStack icon,
         @NotNull Tier[] tiers,
         @NotNull Statistic statistic,
         @NotNull Function<@Nullable JsonElement, @NotNull Integer> progress

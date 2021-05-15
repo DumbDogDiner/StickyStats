@@ -11,6 +11,7 @@ import com.google.common.collect.MapMaker
 import com.google.gson.JsonElement
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.WeakHashMap
 import java.util.function.Function
@@ -33,11 +34,12 @@ object SassServiceImpl : SassService, Listener {
 
     override fun createChallenge(
         name: String,
+        icon: ItemStack,
         tiers: Array<out Tier>,
         statistic: Statistic,
         progress: Function<JsonElement?, Int>
     ): ChallengeImpl {
-        val result = ChallengeImpl(name, tiers, statistic, progress)
+        val result = ChallengeImpl(name, icon, tiers, statistic, progress)
         challenges += result
         statisticToChallengesMap.getOrPut(statistic) { mutableListOf() } += result
         return result

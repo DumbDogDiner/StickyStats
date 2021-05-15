@@ -1,7 +1,6 @@
 package com.dumbdogdiner.sass.gui
 
 import com.dumbdogdiner.sass.SassPlugin
-import com.dumbdogdiner.sass.api.reward.Tier
 import com.dumbdogdiner.sass.impl.SassServiceImpl
 import com.dumbdogdiner.sass.translation.L
 import com.dumbdogdiner.sass.util.cancelTask
@@ -10,7 +9,6 @@ import com.dumbdogdiner.sass.util.runTask
 import com.dumbdogdiner.sass.util.runTaskAsynchronously
 import com.dumbdogdiner.sass.util.scheduleSyncRepeatingTask
 import com.dumbdogdiner.stickyapi.bukkit.gui.GUI
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Player
@@ -29,7 +27,7 @@ private var ItemStack.name
 
 class ChallengeGUI(private val player: Player) : GUI(6, L.challengesGuiTitle(), SassPlugin.instance) {
     private var pageNumber = 0
-    private var entries = arrayOf<ChallengeGUIEntry>()
+    private var entries = arrayOf<ItemStack>()
     private val task: Int
     private val maxPageNumber
         get() = if (this.entries.isEmpty()) 0 else (this.entries.size - 1) / SLOTS_PER_PAGE
@@ -87,12 +85,27 @@ class ChallengeGUI(private val player: Player) : GUI(6, L.challengesGuiTitle(), 
                     this.entries = allChallenges.map { challenge ->
                         val progress = challenge.getProgressForPlayer(playerId)
                         val tierIndex = challenge.getTierForProgress(progress)
-                        val tierState = if (tierIndex >= 0) {
-                            val last = if (tierIndex == 0) null else challenge.tiers[tierIndex - 1]
-                            val current = challenge.tiers[tierIndex]
-                            ChallengeGUIEntryTierState(tierIndex, last, current, progress)
-                        } else null
-                        ChallengeGUIEntry(challenge.name, tierState)
+                        val item = challenge.icon.clone()
+                        if (tierIndex >= 0) {
+                            val currentTier = challenge.tiers[tierIndex]
+                            val start = if (tierIndex == 0) 0 else challenge.tiers[tierIndex - 1].threshold
+                            val goal = currentTier.threshold
+                            val percentage = (100 * (progress - start).toDouble() / (goal - start)).toInt()
+                            item.name = L.challengeNameAndTier(
+                                "name" to challenge.name,
+                                "tier" to (tierIndex + 1).romanNumeral()
+                            )
+                            item.lore = listOf(
+                                L.Description.reward("reward" to currentTier.reward),
+                                L.Description.completion("percentage" to percentage),
+                                L.Description.progress("progress" to progress),
+                                L.Description.goal("goal" to goal),
+                            )
+                        } else {
+                            item.name = challenge.name
+                            item.lore = listOf(L.Description.completed())
+                        }
+                        item
                     }.toTypedArray()
                 }
 
@@ -117,41 +130,7 @@ class ChallengeGUI(private val player: Player) : GUI(6, L.challengesGuiTitle(), 
         }
 
         for (i in start until min(end, this.entries.size)) {
-            val item = ItemStack(Material.STONE)
-            val entry = this.entries[i]
-            val tierState = entry.tierState
-            if (tierState != null) {
-                item.name = L.challengeNameAndTier("name" to entry.name, "tier" to (tierState.index + 1).romanNumeral())
-                item.lore = listOf(
-                    L.Description.reward("reward" to tierState.current.reward),
-                    L.Description.completion("percentage" to tierState.percentage),
-                    L.Description.progress("progress" to tierState.progress),
-                    L.Description.goal("goal" to tierState.goal),
-                )
-            } else {
-                item.name = entry.name
-                item.lore = listOf(L.Description.completed())
-            }
-            this.addSlot(i % 9, (i / 9) % 5, item)
+            this.addSlot(i % 9, (i / 9) % 5, this.entries[i])
         }
-    }
-
-    private data class ChallengeGUIEntry(
-        val name: String,
-        val tierState: ChallengeGUIEntryTierState?,
-    )
-
-    private data class ChallengeGUIEntryTierState(
-        val index: Int,
-        val last: Tier?,
-        val current: Tier,
-        val progress: Int,
-    ) {
-        val start
-            get() = this.last?.threshold ?: 0
-        val goal
-            get() = this.current.threshold
-        val percentage
-            get() = (100 * (this.progress - this.start).toDouble() / (this.goal - this.start)).toInt()
     }
 }

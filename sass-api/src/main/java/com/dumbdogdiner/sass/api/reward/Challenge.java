@@ -8,6 +8,7 @@ import com.dumbdogdiner.sass.api.stats.Statistic;
 import com.google.gson.JsonElement;
 import java.util.UUID;
 import java.util.function.Function;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,6 +22,12 @@ public interface Challenge {
      */
     @NotNull
     String getName();
+
+    /**
+     * @return The icon of this challenge.
+     */
+    @NotNull
+    ItemStack getIcon();
 
     /**
      * @return The tiers for this challenge.

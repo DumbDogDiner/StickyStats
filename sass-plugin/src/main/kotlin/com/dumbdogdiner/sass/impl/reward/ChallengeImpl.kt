@@ -13,15 +13,19 @@ import com.google.gson.JsonElement
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
+import org.bukkit.inventory.ItemStack
 import java.util.function.Function
 
 class ChallengeImpl(
     private val name: String,
+    private val icon: ItemStack,
     private val tiers: Array<out Tier>,
     private val statistic: Statistic,
     private val progress: Function<JsonElement?, Int>,
 ) : Challenge, Listener {
     override fun getName() = name
+
+    override fun getIcon() = icon
 
     override fun getTiers() = tiers
 
