@@ -36,6 +36,7 @@ class StatisticImpl(
     override fun getStore() = store
 
     override fun reset() {
+        valueMap.clear()
         databaseReset(this)
         Bukkit.getPluginManager().callEvent(StatisticResetEvent(this))
     }
