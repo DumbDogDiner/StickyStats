@@ -6,10 +6,10 @@ package com.dumbdogdiner.sass.api.reward;
 
 import com.dumbdogdiner.sass.api.stats.Statistic;
 import com.google.gson.JsonElement;
+import java.util.UUID;
+import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
 
 /**
  * Represents a challenge. Challenges are goals that a player may pursue. They contain various attributes that allow
@@ -53,6 +53,19 @@ public interface Challenge {
             }
         }
         return -1;
+    }
+
+    /**
+     * @param playerId The UUID of the player.
+     * @return The progress this player has in this challenge.
+     */
+    default int getProgressForPlayer(@NotNull UUID playerId) {
+        var statValue = this.getStatistic().get(playerId);
+        if (statValue == null) {
+            return 0;
+        } else {
+            return this.getProgress().apply(statValue);
+        }
     }
 
     /**
