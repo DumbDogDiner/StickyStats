@@ -1,5 +1,6 @@
 package com.dumbdogdiner.sass.db
 
+import com.dumbdogdiner.sass.impl.stats.StatisticImpl
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
@@ -7,7 +8,7 @@ import org.jetbrains.exposed.sql.select
 /**
  * Table to group pools and servers into "maps".
  */
-object StatMaps : Table("sass_stat_maps") {
+internal object StatMaps : Table("sass_stat_maps") {
     /** The ID of the stat pool. */
     val statPoolId = integer("stat_pool_id")
     /** The name of the server, or null if this statistic is global. */
@@ -18,12 +19,18 @@ object StatMaps : Table("sass_stat_maps") {
     override val primaryKey = PrimaryKey(statMapId)
 
     /**
-     * Delete the given map. The caller should check to ensure this map is not referenced.
+     * Remove [stat] from this table, and possibly modify [StatPools] if a pool is no longer referenced.
      */
-    fun delete(id: Int) = deleteWhere { statMapId eq id }
-
-    /**
-     * Check if any maps reference a given pool.
-     */
-    fun containsPool(id: Int) = select { statPoolId eq id }.limit(1).any()
+    fun delete(stat: StatisticImpl) {
+        stat.statMapId?.let { statMapId ->
+            stat.statMapId = null
+            deleteWhere { StatMaps.statMapId eq statMapId }
+            stat.statPoolId?.let { statPoolId ->
+                if (select { StatMaps.statPoolId eq statPoolId }.limit(1).none()) {
+                    stat.statPoolId = null
+                    StatPools.deleteWhere { StatPools.statPoolId eq statPoolId }
+                }
+            }
+        }
+    }
 }

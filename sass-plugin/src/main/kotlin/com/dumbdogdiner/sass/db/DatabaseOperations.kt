@@ -109,25 +109,7 @@ fun databaseSet(stat: StatisticImpl, playerId: UUID, value: JsonElement) {
  */
 fun databaseRemove(stat: StatisticImpl, playerId: UUID): Boolean {
     return loggedTransaction {
-        stat.statMapId?.let { statMapId ->
-            if (StatEntries.remove(statMapId, playerId)) {
-                // If that was the last entry in this map, delete the map
-                if (!StatEntries.containsMap(statMapId)) {
-                    stat.statMapId = null
-                    StatMaps.delete(statMapId)
-                    stat.statPoolId?.let { statPoolId ->
-                        // If that was the last map in this pool, delete the pool
-                        if (!StatMaps.containsPool(statPoolId)) {
-                            stat.statPoolId = null
-                            StatPools.delete(statPoolId)
-                        }
-                    }
-                }
-                true
-            } else {
-                false
-            }
-        } ?: false
+        StatEntries.remove(stat, playerId)
     }
 }
 
@@ -136,18 +118,6 @@ fun databaseRemove(stat: StatisticImpl, playerId: UUID): Boolean {
  */
 fun databaseReset(stat: StatisticImpl) {
     loggedTransaction {
-        stat.statMapId?.let { statMapId ->
-            if (StatEntries.reset(statMapId)) {
-                stat.statMapId = null
-                StatMaps.delete(statMapId)
-                stat.statPoolId?.let { statPoolId ->
-                    // If that was the last map in this pool, delete the pool
-                    if (!StatMaps.containsPool(statPoolId)) {
-                        stat.statPoolId = null
-                        StatPools.delete(statPoolId)
-                    }
-                }
-            }
-        }
+        StatEntries.reset(stat)
     }
 }

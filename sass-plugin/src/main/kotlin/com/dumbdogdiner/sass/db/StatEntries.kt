@@ -1,5 +1,7 @@
 package com.dumbdogdiner.sass.db
 
+import com.dumbdogdiner.sass.impl.stats.StatisticImpl
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
@@ -9,7 +11,7 @@ import java.util.UUID
 /**
  * Table to map stat maps and player IDs to CBOR-encoded values.
  */
-object StatEntries : Table("sass_stat_entries") {
+internal object StatEntries : Table("sass_stat_entries") {
     /** The ID of the stat map. */
     val statMapId = integer("stat_map_id")
     /** The ID of the player. */
@@ -22,16 +24,27 @@ object StatEntries : Table("sass_stat_entries") {
     /**
      * Delete an entry with the given map ID and player ID, returning true if something was deleted.
      */
-    fun remove(id: Int, playerId: UUID) =
-        deleteWhere { statMapId eq id and (StatEntries.playerId eq playerId) } != 0
+    fun remove(stat: StatisticImpl, playerId: UUID): Boolean {
+        stat.statMapId?.let { statMapId ->
+            if (deleteWhere { StatEntries.statMapId eq statMapId and (StatEntries.playerId eq playerId) } != 0) {
+                // If that was the last entry in this map, delete the map
+                if (select { StatEntries.statMapId eq statMapId }.limit(1).none()) {
+                    StatMaps.delete(stat)
+                }
+                return true
+            }
+        }
+        return false
+    }
 
     /**
-     * Delete all values for a given stat map ID.
+     * Delete all values for a given stat map ID, additionally removing unused rows.
      */
-    fun reset(id: Int) = deleteWhere { statMapId eq id } != 0
-
-    /**
-     * Check if any entries reference a given map.
-     */
-    fun containsMap(id: Int) = select { statMapId eq id }.limit(1).any()
+    fun reset(stat: StatisticImpl) {
+        stat.statMapId?.let { statMapId ->
+            if (deleteWhere { StatEntries.statMapId eq statMapId } != 0) {
+                StatMaps.delete(stat)
+            }
+        }
+    }
 }
