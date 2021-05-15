@@ -11,6 +11,7 @@ import com.dumbdogdiner.sass.db.databaseGet
 import com.dumbdogdiner.sass.db.databaseRemove
 import com.dumbdogdiner.sass.db.databaseReset
 import com.dumbdogdiner.sass.db.databaseSet
+import com.dumbdogdiner.sass.util.CachedNullable
 import com.google.common.collect.MapMaker
 import com.google.gson.JsonElement
 import org.bukkit.Bukkit
@@ -20,13 +21,10 @@ class StatisticImpl(
     private val identifier: String,
     private val store: StoreImpl,
 ) : Statistic {
-    private val valueMap = MapMaker().weakValues().makeMap<UUID, CachedElement>()
+    private val valueMap = MapMaker().weakValues().makeMap<UUID, CachedNullable<JsonElement>>()
 
-    val statPoolIdDelegate = CachedStatPool()
-    val statMapIdDelegate = CachedStatMap()
-
-    val statPoolId by this.statPoolIdDelegate
-    val statMapId by this.statMapIdDelegate
+    var statPoolId by CachedStatPool()
+    var statMapId by CachedStatMap()
 
     val pluginName get() = this.store.plugin.name
     val serverName get() = if (this.store.isGlobal) SassPlugin.instance.serverName else null
@@ -42,14 +40,14 @@ class StatisticImpl(
     }
 
     override fun get(playerId: UUID) = (valueMap[playerId] ?: run {
-        val result = CachedElement(databaseGet(this, playerId))
+        val result = CachedNullable(databaseGet(this, playerId))
         valueMap[playerId] = result
         result
-    }).element
+    }).value
 
     override fun set(playerId: UUID, value: JsonElement) {
         val oldValue = this[playerId]
-        valueMap[playerId] = CachedElement(value)
+        valueMap[playerId] = CachedNullable(value)
         databaseSet(this, playerId, value)
         val event = StatisticModifiedEvent(this, playerId, oldValue, value)
         Bukkit.getPluginManager().callEvent(event)
@@ -58,7 +56,7 @@ class StatisticImpl(
                 valueMap -= playerId
                 databaseRemove(this, playerId)
             } else {
-                valueMap[playerId] = CachedElement(oldValue)
+                valueMap[playerId] = CachedNullable(oldValue)
                 databaseSet(this, playerId, oldValue)
             }
         }
@@ -74,6 +72,4 @@ class StatisticImpl(
             false
         }
     }
-
-    private class CachedElement(val element: JsonElement?)
 }

@@ -13,7 +13,6 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -57,88 +56,80 @@ internal fun <T> loggedTransaction(statement: Transaction.() -> T) = transaction
 private fun selectStatEntries(statMapId: Int, playerId: UUID) =
     StatEntries.statMapId eq statMapId and (StatEntries.playerId eq playerId)
 
-private fun getStatValue(statMapId: Int, playerId: UUID): ExposedBlob? {
-    val row = StatEntries.select(selectStatEntries(statMapId, playerId)).singleOrNull() ?: return null
-    return row[StatEntries.statValue]
-}
-
 fun databaseGet(stat: StatisticImpl, playerId: UUID): JsonElement? {
     return loggedTransaction {
-        val statMapId = stat.statMapId ?: return@loggedTransaction null
-        val statValue = getStatValue(statMapId, playerId) ?: return@loggedTransaction null
-        statValue.bytes.fromCbor()
+        stat.statMapId?.let { statMapId ->
+            StatEntries.select(selectStatEntries(statMapId, playerId)).singleOrNull()?.let { row ->
+                row[StatEntries.statValue].bytes.fromCbor()
+            }
+        }
     }
 }
-
-private fun insertStatPool(stat: StatisticImpl) = StatPools.insert {
-    it[pluginName] = stat.pluginName
-    it[statName] = stat.identifier
-}[StatPools.statPoolId].also { stat.statPoolIdDelegate.overrideCache(it) }
-
-private fun insertStatMap(stat: StatisticImpl, statPoolId: Int) = StatMaps.insert {
-    it[this.statPoolId] = statPoolId
-    it[serverName] = stat.serverName
-}[StatMaps.statMapId].also { stat.statMapIdDelegate.overrideCache(it) }
-
-private fun insertStatEntry(statMapId: Int, playerId: UUID, statValue: ExposedBlob) = StatEntries.insert {
-    it[this.statMapId] = statMapId
-    it[this.playerId] = playerId
-    it[this.statValue] = statValue
-}
-
-private fun updateStatEntry(statMapId: Int, playerId: UUID, statValue: ExposedBlob) =
-    StatEntries.update({ selectStatEntries(statMapId, playerId )}) {
-        it[this.statValue] = statValue
-    }
 
 fun databaseSet(stat: StatisticImpl, playerId: UUID, value: JsonElement) {
     loggedTransaction {
         // Get a pool ID, or make a new one
-        val statPoolId = stat.statPoolId ?: insertStatPool(stat)
+        val statPoolId = stat.statPoolId ?: StatPools.insert {
+            it[pluginName] = stat.pluginName
+            it[statName] = stat.identifier
+        }[StatPools.statPoolId].also { stat.statPoolId = it }
         // Get a map ID, or make a new one
-        val statMapId = stat.statMapId ?: insertStatMap(stat, statPoolId)
+        val statMapId = stat.statMapId ?: StatMaps.insert {
+            it[this.statPoolId] = statPoolId
+            it[serverName] = stat.serverName
+        }[StatMaps.statMapId].also { stat.statMapId = it }
         // Update or create an entry for the value
         val statValue = ExposedBlob(value.toCbor())
-        val updateResult = updateStatEntry(statMapId, playerId, statValue)
+        val updateResult = StatEntries.update({ selectStatEntries(statMapId, playerId )}) {
+            it[this.statValue] = statValue
+        }
         if (updateResult == 0) {
-            insertStatEntry(statMapId, playerId, statValue)
+            StatEntries.insert {
+                it[this.statMapId] = statMapId
+                it[this.playerId] = playerId
+                it[this.statValue] = statValue
+            }
         }
     }
 }
 
 fun databaseRemove(stat: StatisticImpl, playerId: UUID): Boolean {
     return loggedTransaction {
-        val statMapId = stat.statMapId ?: return@loggedTransaction false
-        val entryDeleteResult = StatEntries.deleteWhere { selectStatEntries(statMapId, playerId) }
-        if (entryDeleteResult != 0) {
-            // If that was the last entry in this map, delete the map
-            if (StatEntries.select { StatEntries.statMapId eq statMapId }.none()) {
-                stat.statMapIdDelegate.invalidateCache()
-                StatMaps.deleteWhere { StatMaps.statMapId eq statMapId }
-                // If that was the last map in this pool, delete the pool
-                val statPoolId = stat.statPoolId ?: return@loggedTransaction entryDeleteResult != 0
-                if (StatMaps.select { StatMaps.statPoolId eq statPoolId }.none()) {
-                    stat.statPoolIdDelegate.invalidateCache()
-                    StatPools.deleteWhere { StatPools.statPoolId eq statPoolId }
+        stat.statMapId?.let { statMapId ->
+            if (StatEntries.remove(statMapId, playerId)) {
+                // If that was the last entry in this map, delete the map
+                if (!StatEntries.containsPool(statMapId)) {
+                    stat.statMapId = null
+                    StatMaps.delete(statMapId)
+                    stat.statPoolId?.let { statPoolId ->
+                        // If that was the last map in this pool, delete the pool
+                        if (!StatMaps.containsPool(statPoolId)) {
+                            stat.statPoolId = null
+                            StatPools.delete(statPoolId)
+                        }
+                    }
                 }
+                true
+            } else {
+                false
             }
-        }
-        entryDeleteResult != 0
+        } ?: false
     }
 }
 
 fun databaseReset(stat: StatisticImpl) {
     loggedTransaction {
-        val statMapId = stat.statMapId ?: return@loggedTransaction
-        val entryDeleteResult = StatEntries.deleteWhere { StatEntries.statMapId eq statMapId }
-        if (entryDeleteResult != 0) {
-            stat.statMapIdDelegate.invalidateCache()
-            StatMaps.deleteWhere { StatMaps.statMapId eq statMapId }
-            // If that was the last map in this pool, delete the pool
-            val statPoolId = stat.statPoolId ?: return@loggedTransaction
-            if (StatMaps.select { StatMaps.statPoolId eq statPoolId }.none()) {
-                stat.statPoolIdDelegate.invalidateCache()
-                StatPools.deleteWhere { StatPools.statPoolId eq statPoolId }
+        stat.statMapId?.let { statMapId ->
+            if (StatEntries.reset(statMapId)) {
+                stat.statMapId = null
+                StatMaps.delete(statMapId)
+                stat.statPoolId?.let { statPoolId ->
+                    // If that was the last map in this pool, delete the pool
+                    if (!StatMaps.containsPool(statPoolId)) {
+                        stat.statPoolId = null
+                        StatPools.delete(statPoolId)
+                    }
+                }
             }
         }
     }
