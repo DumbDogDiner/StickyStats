@@ -3,6 +3,7 @@ package com.dumbdogdiner.sass.gui
 import com.dumbdogdiner.sass.SassPlugin
 import com.dumbdogdiner.sass.api.reward.Tier
 import com.dumbdogdiner.sass.impl.SassServiceImpl
+import com.dumbdogdiner.sass.translation.L
 import com.dumbdogdiner.sass.util.romanNumeral
 import com.dumbdogdiner.stickyapi.bukkit.gui.GUI
 import org.bukkit.Bukkit
@@ -15,7 +16,7 @@ import kotlin.math.min
 
 private const val SLOTS_PER_PAGE = 9 * 5
 
-class ChallengeGUI(private val player: Player) : GUI(6, "Challenges", SassPlugin.instance) {
+class ChallengeGUI(private val player: Player) : GUI(6, L.challengesGuiTitle(), SassPlugin.instance) {
     private var pageNumber = 0
     private var entries = arrayOf<ChallengeGUIEntry>()
     private val task: Int
@@ -59,16 +60,17 @@ class ChallengeGUI(private val player: Player) : GUI(6, "Challenges", SassPlugin
             addSlot(i % 9, (i / 9) % 5, ItemStack(Material.STONE).apply {
                 val entry = entries[i]
                 entry.tierState?.let { tierState ->
-                    itemMeta = itemMeta.apply { setDisplayName("${entry.name} ${(tierState.index + 1).romanNumeral()}") }
+                    val name = L.challengeNameAndTier("name" to entry.name, "tier" to (tierState.index + 1).romanNumeral())
+                    itemMeta = itemMeta.apply { setDisplayName(name) }
                     lore = listOf(
-                        "Reward: ${tierState.current.reward}",
-                        "Completion: ${tierState.percentage}",
-                        "Progress: ${tierState.progress}",
-                        "Goal: ${tierState.goal}",
+                        L.Description.reward("reward" to tierState.current.reward),
+                        L.Description.completion("percentage" to tierState.percentage),
+                        L.Description.progress("progress" to tierState.progress),
+                        L.Description.goal("goal" to tierState.goal),
                     )
                 } ?: run {
                     itemMeta = itemMeta.apply { setDisplayName(entry.name) }
-                    lore = listOf("Completed")
+                    lore = listOf(L.Description.completed())
                 }
             })
         }
@@ -76,7 +78,7 @@ class ChallengeGUI(private val player: Player) : GUI(6, "Challenges", SassPlugin
 
     init {
         addSlot(0, 5, ItemStack(Material.ARROW).apply {
-            itemMeta = itemMeta.apply { setDisplayName("Previous page") }
+            itemMeta = itemMeta.apply { setDisplayName(L.previousPage()) }
         }) { _, _ ->
             if (pageNumber > 0) {
                 pageNumber--
@@ -86,7 +88,7 @@ class ChallengeGUI(private val player: Player) : GUI(6, "Challenges", SassPlugin
         }
 
         addSlot(8, 5, ItemStack(Material.ARROW).apply {
-            itemMeta = itemMeta.apply { setDisplayName("Next page") }
+            itemMeta = itemMeta.apply { setDisplayName(L.nextPage()) }
         }) { _, _ ->
             if (pageNumber < maxPageNumber) {
                 pageNumber++

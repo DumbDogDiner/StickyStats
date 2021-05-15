@@ -5,7 +5,6 @@ import com.dumbdogdiner.sass.command.ChallengesCommand
 import com.dumbdogdiner.sass.db.databaseInit
 import com.dumbdogdiner.sass.impl.SassServiceImpl
 import com.dumbdogdiner.sass.util.fetchServerName
-import com.dumbdogdiner.stickyapi.common.translation.LocaleProvider
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIConfig
 import kr.entree.spigradle.annotations.PluginMain
@@ -14,7 +13,6 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.exposed.sql.Database
-import java.io.File
 import java.net.URI
 
 @PluginMain

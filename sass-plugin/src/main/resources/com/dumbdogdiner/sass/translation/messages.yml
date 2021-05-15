@@ -1,1 +1,15 @@
-challenge completed: For completing the {name} {tier} challenge, you have been awarded {reward} miles!
+challenge completed: 'For completing the {name} {tier} challenge, you have been awarded {reward} miles!'
+challenge name and tier: '{name} {tier}'
+
+previous page: 'Previous page'
+next page: 'Next page'
+
+challenges gui title: 'Challenges'
+
+description:
+  reward: 'Reward: {reward} miles'
+  completion: 'Completion: {percentage}%'
+  progress: 'Progress: {progress}'
+  goal: 'Goal: {goal}'
+
+  completed: 'Completed'
