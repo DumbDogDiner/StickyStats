@@ -13,6 +13,9 @@ import java.io.ByteArrayOutputStream
 // Should be in java with a couple other bits to make a bunch of this easier; and switch away from json completely
 // use this https://github.com/c-rack/cbor-java
 
+/**
+ * Convert a JSON object to an encoded CBOR value.
+ */
 fun JsonElement.toCbor(): ByteArray {
     // convert us to a matching Jackson value
     val node = JsonFactory(JsonMapper()).createParser(toString()).use { it.readValueAsTree<JsonNode> () }
@@ -23,6 +26,9 @@ fun JsonElement.toCbor(): ByteArray {
     return output.toByteArray()
 }
 
+/**
+ * Convert an encoded CBOR value to a JSON object.
+ */
 fun ByteArray.fromCbor(): JsonElement {
     // decode to Jackson value
     val node = CBORFactory(CBORMapper()).createParser(ByteArrayInputStream(this)).use { it.readValueAsTree<JsonNode>() }

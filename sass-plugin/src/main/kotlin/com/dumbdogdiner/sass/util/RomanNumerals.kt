@@ -1,10 +1,7 @@
 package com.dumbdogdiner.sass.util
 
 /**
- * @param i The digit for one in this place.
- * @param v The digit for five in this place.
- * @param x The digit for ten in this place.
- * @return Mappings for a digit in a certain place.
+ * Take in digits [i], [v], and [x], and create mappings for a digit in that place.
  */
 private fun findNumeralSet(i: Char, v: Char, x: Char) = arrayOf(
     "",   "$i",   "$i$i",   "$i$i$i",   "$i$v", //   I  II  III  VI
@@ -19,7 +16,7 @@ private val tensPlace = findNumeralSet('X', 'L', 'C')
 private val hunsPlace = findNumeralSet('C', 'D', 'M')
 
 /**
- * @return The roman numeral representation of this number.
+ * Returns the roman numeral representation of this number.
  */
 fun Int.romanNumeral() = when {
     this > 0 -> this.romanNumeralAssumePositive()
@@ -28,7 +25,7 @@ fun Int.romanNumeral() = when {
 }
 
 /**
- * @return The roman numeral representation of this number, assuming it is positive.
+ * Returns the roman numeral representation of this number, assuming it is positive.
  */
 private fun Int.romanNumeralAssumePositive() =
     "M".repeat(this / 1000) +

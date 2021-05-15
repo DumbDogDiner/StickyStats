@@ -23,15 +23,14 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.util.UUID
 
+/** The database to get information from. */
 private lateinit var db: Database
+/** The logger to log SQL queries. */
 private lateinit var logger: SqlLogger
 
-private fun Table.createIfNotExists() {
-    if (!this.exists()) {
-        SchemaUtils.create(this)
-    }
-}
-
+/**
+ * Initialize these database methods.
+ */
 fun databaseInit(database: Database) {
     db = database
     logger = object : SqlLogger {
@@ -42,20 +41,29 @@ fun databaseInit(database: Database) {
 
     // make sure the needed tables exist
     loggedTransaction {
-        StatPools.createIfNotExists()
-        StatMaps.createIfNotExists()
-        StatEntries.createIfNotExists()
+        SchemaUtils.create(StatPools)
+        SchemaUtils.create(StatMaps)
+        SchemaUtils.create(StatEntries)
     }
 }
 
+/**
+ * Perform a transaction using the correct database and logger.
+ */
 internal fun <T> loggedTransaction(statement: Transaction.() -> T) = transaction(db) {
     addLogger(logger)
     statement()
 }
 
+/**
+ * Return a selector to find the stat entry with the given map ID and player ID.
+ */
 private fun selectStatEntries(statMapId: Int, playerId: UUID) =
     StatEntries.statMapId eq statMapId and (StatEntries.playerId eq playerId)
 
+/**
+ * Get the value of [stat] for [playerId] directly from the database.
+ */
 fun databaseGet(stat: StatisticImpl, playerId: UUID): JsonElement? {
     return loggedTransaction {
         stat.statMapId?.let { statMapId ->
@@ -66,6 +74,9 @@ fun databaseGet(stat: StatisticImpl, playerId: UUID): JsonElement? {
     }
 }
 
+/**
+ * Set the value of [stat] for [playerId] to [value], creating rows as needed.
+ */
 fun databaseSet(stat: StatisticImpl, playerId: UUID, value: JsonElement) {
     loggedTransaction {
         // Get a pool ID, or make a new one
@@ -93,12 +104,15 @@ fun databaseSet(stat: StatisticImpl, playerId: UUID, value: JsonElement) {
     }
 }
 
+/**
+ * Remove the value for [playerId] in [stat], additionally removing unreferenced rows.
+ */
 fun databaseRemove(stat: StatisticImpl, playerId: UUID): Boolean {
     return loggedTransaction {
         stat.statMapId?.let { statMapId ->
             if (StatEntries.remove(statMapId, playerId)) {
                 // If that was the last entry in this map, delete the map
-                if (!StatEntries.containsPool(statMapId)) {
+                if (!StatEntries.containsMap(statMapId)) {
                     stat.statMapId = null
                     StatMaps.delete(statMapId)
                     stat.statPoolId?.let { statPoolId ->
@@ -117,6 +131,9 @@ fun databaseRemove(stat: StatisticImpl, playerId: UUID): Boolean {
     }
 }
 
+/**
+ * Remove [stat] and all its values, additionally removing unreferenced rows.
+ */
 fun databaseReset(stat: StatisticImpl) {
     loggedTransaction {
         stat.statMapId?.let { statMapId ->

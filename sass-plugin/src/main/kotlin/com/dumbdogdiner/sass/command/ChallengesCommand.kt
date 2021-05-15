@@ -5,6 +5,9 @@ import dev.jorel.commandapi.annotations.Command
 import dev.jorel.commandapi.annotations.Default
 import org.bukkit.entity.Player
 
+/**
+ * The /challenges command opens a GUI to display the player's progress in all challenges.
+ */
 @Command("challenges")
 object ChallengesCommand {
     @Default
