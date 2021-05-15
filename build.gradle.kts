@@ -1,5 +1,8 @@
 import kr.entree.spigradle.kotlin.papermc
 
+// todo: needs javadoc, kotlindoc, etc
+// todo and sources jars as well as javadoc jars
+
 plugins {
     java
     id("com.diffplug.spotless") version "5.8.2"

@@ -10,6 +10,9 @@ import com.google.gson.JsonParser
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
+// Should be in java with a couple other bits to make a bunch of this easier; and switch away from json completely
+// use this https://github.com/c-rack/cbor-java
+
 fun JsonElement.toCbor(): ByteArray {
     // convert us to a matching Jackson value
     val node = JsonFactory(JsonMapper()).createParser(toString()).use { it.readValueAsTree<JsonNode> () }

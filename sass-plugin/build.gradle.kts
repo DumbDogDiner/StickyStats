@@ -40,6 +40,7 @@ dependencies {
     // Shade CommandAPI into plugin
     implementation("dev.jorel:commandapi-shade:5.11")
     // Add necessary database libraries
+    // TODO: need hikaricp
     implementation("org.jetbrains.exposed:exposed-core:0.31.1")
     implementation("org.jetbrains.exposed:exposed-dao:0.31.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.31.1")
