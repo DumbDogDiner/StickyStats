@@ -2,9 +2,9 @@ package com.dumbdogdiner.sass.translation
 
 import kotlin.reflect.KProperty
 
-internal class TranslatableMessageDelegate(private val path: String) {
-    operator fun getValue(obj: Any, property: KProperty<*>) =
-        TranslatableMessage(L.messageFile.getString(path) ?: "<missing translation value for $path>")
+internal class TranslatableMessageDelegate(path: String) {
+    private val message = TranslatableMessage(L.messageFile.getString(path) ?: "<missing translation value for $path>")
+    operator fun getValue(obj: Any, property: KProperty<*>) = message
 }
 
 internal fun msg(path: String) = TranslatableMessageDelegate(path)

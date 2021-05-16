@@ -18,7 +18,7 @@ import java.io.ByteArrayOutputStream
  */
 fun JsonElement.toCbor(): ByteArray {
     // convert us to a matching Jackson value
-    val node = JsonFactory(JsonMapper()).createParser(toString()).use { it.readValueAsTree<JsonNode> () }
+    val node = JsonFactory(JsonMapper()).createParser(toString()).use { it.readValueAsTree<JsonNode>() }
     // serialize that value as CBOR
     val output = ByteArrayOutputStream()
     CBORFactory(CBORMapper()).createGenerator(output).use { it.codec.writeTree(it, node) }
