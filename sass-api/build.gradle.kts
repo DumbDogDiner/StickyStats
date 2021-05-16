@@ -32,6 +32,12 @@ spotless {
     }
 }
 
+java {
+    // Create sources and Javadoc, for easier API usage
+    withSourcesJar()
+    withJavadocJar()
+}
+
 tasks {
     generateSpigotDescription {
         enabled = false
