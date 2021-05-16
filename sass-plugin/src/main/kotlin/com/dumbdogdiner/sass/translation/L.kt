@@ -11,20 +11,24 @@ object L {
         ?: throw IllegalStateException("Couldn't find the translation resources"))
         .use { YamlConfiguration.loadConfiguration(it.reader()) }
 
-    val challengeCompleted by msg("challenge completed")
-    val challengeNameAndTier by msg("challenge name and tier")
+    object Chat {
+        val tierCompleted by msg("chat.tier completed")
+        val challengeCompleted by msg("chat.challenge completed")
+    }
 
-    val previousPage by msg("previous page")
-    val nextPage by msg("next page")
+    object Gui {
+        val title by msg("gui.title")
 
-    val challengesGuiTitle by msg("challenges gui title")
+        val previousPage by msg("gui.previous page")
+        val nextPage by msg("gui.next page")
 
-    object Description {
-        val reward by msg("description.reward")
-        val completion by msg("description.completion")
-        val progress by msg("description.progress")
-        val goal by msg("description.goal")
-
-        val completed by msg("description.completed")
+        object Description {
+            val name by msg("gui.description.name")
+            val completedName by msg("gui.description.completed name")
+            val reward by msg("gui.description.reward")
+            val completion by msg("gui.description.completion")
+            val progress by msg("gui.description.progress")
+            val goal by msg("gui.description.goal")
+        }
     }
 }

@@ -25,7 +25,7 @@ private var ItemStack.name
         this.itemMeta = this.itemMeta.apply { this.setDisplayName(value) }
     }
 
-class ChallengeGUI(private val player: Player) : GUI(6, L.challengesGuiTitle(), SassPlugin.instance) {
+class ChallengeGUI(private val player: Player) : GUI(6, L.Gui.title(), SassPlugin.instance) {
     private var pageNumber = 0
     private var entries = arrayOf<ItemStack>()
     private val task: Int
@@ -35,7 +35,7 @@ class ChallengeGUI(private val player: Player) : GUI(6, L.challengesGuiTitle(), 
     init {
         // Previous page button at bottom left
         val previousPage = ItemStack(Material.ARROW)
-        previousPage.name = L.previousPage()
+        previousPage.name = L.Gui.previousPage()
         this.addSlot(0, 5, previousPage) { _, _ ->
             if (this.pageNumber > 0) {
                 this.turnLeft()
@@ -43,7 +43,7 @@ class ChallengeGUI(private val player: Player) : GUI(6, L.challengesGuiTitle(), 
         }
         // Next page button at bottom right
         val nextPage = ItemStack(Material.ARROW)
-        nextPage.name = L.nextPage()
+        nextPage.name = L.Gui.nextPage()
         this.addSlot(8, 5, nextPage) { _, _ ->
             if (this.pageNumber < this.maxPageNumber) {
                 this.turnRight()
@@ -91,19 +91,18 @@ class ChallengeGUI(private val player: Player) : GUI(6, L.challengesGuiTitle(), 
                             val start = if (tierIndex == 0) 0 else challenge.tiers[tierIndex - 1].threshold
                             val goal = currentTier.threshold
                             val percentage = (100 * (progress - start).toDouble() / (goal - start)).toInt()
-                            item.name = L.challengeNameAndTier(
+                            item.name = L.Gui.Description.name(
                                 "name" to challenge.name,
                                 "tier" to (tierIndex + 1).romanNumeral()
                             )
                             item.lore = listOf(
-                                L.Description.reward("reward" to currentTier.reward),
-                                L.Description.completion("percentage" to percentage),
-                                L.Description.progress("progress" to progress),
-                                L.Description.goal("goal" to goal),
+                                L.Gui.Description.reward("reward" to currentTier.reward),
+                                L.Gui.Description.completion("percentage" to percentage),
+                                L.Gui.Description.progress("progress" to progress),
+                                L.Gui.Description.goal("goal" to goal),
                             )
                         } else {
-                            item.name = challenge.name
-                            item.lore = listOf(L.Description.completed())
+                            item.name = L.Gui.Description.completedName("name" to challenge.name)
                         }
                         item
                     }.toTypedArray()

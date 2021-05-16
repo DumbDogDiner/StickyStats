@@ -1,15 +1,17 @@
-challenge completed: 'For completing the {name} {tier} challenge, you have been awarded {reward} miles!'
-challenge name and tier: '{name} {tier}'
+chat:
+  tier completed: '§6Challenges§8 » §fFor completing the §a{name} {tier}§f challenge, you have been awarded §d{reward} miles!'
+  challenge completed: "§6Challenges§8 » §fYou've completed all tiers in the §a{name}§f challenge!"
 
-previous page: 'Previous page'
-next page: 'Next page'
+gui:
+  title: '§lChallenges'
 
-challenges gui title: 'Challenges'
+  previous page: '§lPrevious Page'
+  next page: '§lNext Page'
 
-description:
-  reward: 'Reward: {reward} miles'
-  completion: 'Completion: {percentage}%'
-  progress: 'Progress: {progress}'
-  goal: 'Goal: {goal}'
-
-  completed: 'Completed'
+  description:
+    name: '§a{name} {tier}'
+    completed name: '§a{name}§7 - Completed'
+    reward: '§eReward: §d{reward} miles'
+    completion: '§eCompletion: §d{percentage}%'
+    progress: '§eProgress: §d{progress}'
+    goal: '§eGoal: §d{goal}'
