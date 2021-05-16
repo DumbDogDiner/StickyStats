@@ -3,8 +3,12 @@ import kr.entree.spigradle.kotlin.paper
 import kr.entree.spigradle.kotlin.vault
 
 plugins {
-    id("kr.entree.spigradle")
+    // Use Kotlin, because Kotlin
     kotlin("jvm") version "1.4.32"
+    // Use ktlint for linting and formatting
+    id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+    // Use Spigradle for nicer plugin configuration
+    id("kr.entree.spigradle")
     // Use kapt for CommandAPI annotations
     kotlin("kapt") version "1.4.32"
     // Use shadow to shade in CommandAPI
@@ -25,10 +29,12 @@ repositories {
         }
         url = uri("https://maven.pkg.github.com/DumbDogDiner/StickyAPI/")
     }
+    // CommandAPI repo
     maven("https://raw.githubusercontent.com/JorelAli/CommandAPI/mvn-repo/")
 }
 
 dependencies {
+    // Require Paper, as that's the server fork we use
     compileOnly(paper())
     // Require our API
     implementation(project(":sass-api"))

@@ -9,11 +9,9 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlLogger
-import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.StatementContext
@@ -91,7 +89,7 @@ fun databaseSet(stat: StatisticImpl, playerId: UUID, value: JsonElement) {
         }[StatMaps.statMapId].also { stat.statMapId = it }
         // Update or create an entry for the value
         val statValue = ExposedBlob(value.toCbor())
-        val updateResult = StatEntries.update({ selectStatEntries(statMapId, playerId )}) {
+        val updateResult = StatEntries.update({ selectStatEntries(statMapId, playerId) }) {
             it[this.statValue] = statValue
         }
         if (updateResult == 0) {

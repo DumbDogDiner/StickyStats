@@ -4,7 +4,7 @@ package com.dumbdogdiner.sass.util
  * Take in digits [i], [v], and [x], and create mappings for a digit in that place.
  */
 private fun findNumeralSet(i: Char, v: Char, x: Char) = arrayOf(
-    "",   "$i",   "$i$i",   "$i$i$i",   "$i$v", //   I  II  III  VI
+    "", "$i", "$i$i", "$i$i$i", "$i$v", //           I  II  III  VI
     "$v", "$v$i", "$v$i$i", "$v$i$i$i", "$i$x", // V VI VII VIII IX
 )
 
@@ -29,6 +29,6 @@ fun Int.romanNumeral() = when {
  */
 private fun Int.romanNumeralAssumePositive() =
     "M".repeat(this / 1000) +
-            hunsPlace[(this / 100) % 10] +
-            tensPlace[(this / 10) % 10] +
-            onesPlace[this % 10]
+        hunsPlace[(this / 100) % 10] +
+        tensPlace[(this / 10) % 10] +
+        onesPlace[this % 10]

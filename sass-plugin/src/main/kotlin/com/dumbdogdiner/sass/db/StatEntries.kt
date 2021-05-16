@@ -1,7 +1,6 @@
 package com.dumbdogdiner.sass.db
 
 import com.dumbdogdiner.sass.impl.stats.StatisticImpl
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere

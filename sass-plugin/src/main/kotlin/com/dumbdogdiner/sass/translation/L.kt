@@ -7,9 +7,9 @@ import org.bukkit.configuration.file.YamlConfiguration
  */
 object L {
     // TODO multiple language support
-    internal val messageFile = (this::class.java.getResourceAsStream("messages.yml")
-        ?: throw IllegalStateException("Couldn't find the translation resources"))
-        .use { YamlConfiguration.loadConfiguration(it.reader()) }
+    internal val messageFile =
+        this::class.java.getResourceAsStream("messages.yml")?.use { YamlConfiguration.loadConfiguration(it.reader()) }
+            ?: throw IllegalStateException("Couldn't find the translation resources")
 
     object Chat {
         val tierCompleted by msg("chat.tier completed")

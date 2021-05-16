@@ -39,11 +39,14 @@ class StatisticImpl(
         Bukkit.getPluginManager().callEvent(StatisticResetEvent(this))
     }
 
-    override fun get(playerId: UUID) = (valueMap[playerId] ?: run {
-        val result = CachedNullable(databaseGet(this, playerId))
-        valueMap[playerId] = result
-        result
-    }).value
+    override fun get(playerId: UUID): JsonElement? {
+        val v = valueMap[playerId] ?: run {
+            val result = CachedNullable(databaseGet(this, playerId))
+            valueMap[playerId] = result
+            result
+        }
+        return v.value
+    }
 
     override fun set(playerId: UUID, value: JsonElement) {
         val oldValue = this[playerId]

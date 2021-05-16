@@ -13,13 +13,14 @@ class CachedStatPool {
     private var cachedValue = null as CachedNullable<Int>?
 
     operator fun getValue(stat: StatisticImpl, property: KProperty<*>): Int? {
-        return (this.cachedValue ?: loggedTransaction {
+        val v = this.cachedValue ?: loggedTransaction {
             val fromDb = StatPools
                 .select { StatPools.pluginName eq stat.pluginName and (StatPools.statName eq stat.identifier) }
                 .singleOrNull()
                 ?.get(StatPools.statPoolId)
             CachedNullable(fromDb).also { cachedValue = it }
-        }).value
+        }
+        return v.value
     }
 
     operator fun setValue(stat: StatisticImpl, property: KProperty<*>, value: Int?) {
@@ -35,7 +36,7 @@ class CachedStatMap {
     private var cachedValue = null as CachedNullable<Int>?
 
     operator fun getValue(stat: StatisticImpl, property: KProperty<*>): Int? {
-        return (this.cachedValue ?: loggedTransaction {
+        val v = this.cachedValue ?: loggedTransaction {
             stat.statPoolId?.let { statPoolId ->
                 val fromDb = StatMaps
                     .select { StatMaps.statPoolId eq statPoolId and (StatMaps.serverName eq stat.serverName) }
@@ -43,7 +44,8 @@ class CachedStatMap {
                     ?.get(StatMaps.statMapId)
                 CachedNullable(fromDb).also { cachedValue = it }
             } ?: CachedNullable(null)
-        }).value
+        }
+        return v.value
     }
 
     operator fun setValue(stat: StatisticImpl, property: KProperty<*>, value: Int?) {
