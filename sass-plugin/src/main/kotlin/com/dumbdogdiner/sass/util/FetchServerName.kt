@@ -2,8 +2,6 @@ package com.dumbdogdiner.sass.util
 
 import com.dumbdogdiner.sass.SassPlugin
 import com.google.common.io.ByteStreams
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.runBlocking
 import org.bukkit.Bukkit
 import org.bukkit.plugin.messaging.PluginMessageListener
 
