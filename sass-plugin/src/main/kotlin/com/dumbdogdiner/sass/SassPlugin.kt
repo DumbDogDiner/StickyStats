@@ -8,7 +8,6 @@ import com.dumbdogdiner.sass.util.fetchServerName
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIConfig
 import kr.entree.spigradle.annotations.PluginMain
-import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
@@ -17,7 +16,6 @@ import java.net.URI
 
 @PluginMain
 class SassPlugin : JavaPlugin() {
-    lateinit var economy: Economy
     var serverName = null as String?
 
     override fun onLoad() {
@@ -31,10 +29,6 @@ class SassPlugin : JavaPlugin() {
     override fun onEnable() {
         CommandAPI.onEnable(this)
         CommandAPI.registerCommand(ChallengesCommand::class.java)
-
-        // we need to find an econ provider in order to deal out rewards
-        economy = server.servicesManager.getRegistration(Economy::class.java)?.provider
-            ?: throw IllegalStateException("An economy provider is required for this plugin!")
 
         // If bungee is enabled, find out what our server name is
         fetchServerName()

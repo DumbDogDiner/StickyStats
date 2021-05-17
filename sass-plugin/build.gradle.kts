@@ -1,6 +1,4 @@
-import kr.entree.spigradle.kotlin.jitpack
 import kr.entree.spigradle.kotlin.paper
-import kr.entree.spigradle.kotlin.vault
 
 plugins {
     // Use Kotlin, because Kotlin
@@ -16,8 +14,6 @@ plugins {
 }
 
 repositories {
-    // Using Jitpack for VaultAPI
-    jitpack()
     // Using these repositories for CommandAPI
     maven("https://repo.codemc.org/repository/maven-public")
     maven("https://raw.githubusercontent.com/JorelAli/CommandAPI/mvn-repo/")
@@ -38,8 +34,6 @@ dependencies {
     compileOnly(paper())
     // Require our API
     implementation(project(":sass-api"))
-    // Add vault for rewards
-    compileOnly(vault())
     // Add CommandAPI annotations
     compileOnly("dev.jorel:commandapi-annotations:5.11")
     kapt("dev.jorel:commandapi-annotations:5.11")
@@ -73,8 +67,8 @@ tasks {
     }
 
     spigot {
-        // Vault is required, as rewards are an essential part of this plugin
-        depends = listOf("Vault")
+        // Use StickyWallet to award Miles for completing challenges
+        depends = listOf("StickyWallet")
     }
 }
 

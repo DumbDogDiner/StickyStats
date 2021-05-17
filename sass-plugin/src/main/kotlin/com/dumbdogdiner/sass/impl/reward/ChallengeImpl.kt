@@ -1,6 +1,5 @@
 package com.dumbdogdiner.sass.impl.reward
 
-import com.dumbdogdiner.sass.SassPlugin
 import com.dumbdogdiner.sass.api.event.ChallengeCompletedEvent
 import com.dumbdogdiner.sass.api.event.StatisticModifiedEvent
 import com.dumbdogdiner.sass.api.reward.Challenge
@@ -8,6 +7,7 @@ import com.dumbdogdiner.sass.api.reward.Tier
 import com.dumbdogdiner.sass.api.stats.Statistic
 import com.dumbdogdiner.sass.impl.SassServiceImpl
 import com.dumbdogdiner.sass.translation.L
+import com.dumbdogdiner.sass.util.getNameFromAshcon
 import com.dumbdogdiner.sass.util.romanNumeral
 import com.dumbdogdiner.stickyapi.bukkit.util.SoundUtil
 import com.google.gson.JsonElement
@@ -64,7 +64,8 @@ class ChallengeImpl(
 
     private fun giveReward(tierIndex: Int, player: OfflinePlayer) {
         val reward = tiers[tierIndex].reward
-        SassPlugin.instance.economy.depositPlayer(player, reward.toDouble())
+        val username = player.name ?: getNameFromAshcon(player.uniqueId)
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/stickywallet:eco add $username $reward Miles")
         if (player is Player) {
             val tier = (tierIndex + 1).romanNumeral()
             player.sendMessage(L.Chat.tierCompleted("name" to name, "tier" to tier, "reward" to reward))
