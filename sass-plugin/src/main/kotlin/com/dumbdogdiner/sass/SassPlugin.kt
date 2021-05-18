@@ -4,7 +4,6 @@ import com.dumbdogdiner.sass.api.SassService
 import com.dumbdogdiner.sass.command.ChallengesCommand
 import com.dumbdogdiner.sass.db.databaseInit
 import com.dumbdogdiner.sass.impl.SassServiceImpl
-import com.dumbdogdiner.sass.util.fetchServerName
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIConfig
 import kr.entree.spigradle.annotations.PluginMain
@@ -30,8 +29,11 @@ class SassPlugin : JavaPlugin() {
         CommandAPI.onEnable(this)
         CommandAPI.registerCommand(ChallengesCommand::class.java)
 
-        // If bungee is enabled, find out what our server name is
-        fetchServerName()
+        serverName = config.getString("server name")
+
+        if (serverName == null) {
+            logger.warning("Server name is not in config, per-server stats will not be available!")
+        }
 
         // read this plugin's config to get the database
         val db = config.let {

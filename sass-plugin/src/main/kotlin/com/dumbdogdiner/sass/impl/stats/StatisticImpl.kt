@@ -27,7 +27,7 @@ class StatisticImpl(
     var statMapId by CachedStatMap()
 
     val pluginName get() = this.store.plugin.name
-    val serverName get() = if (this.store.isGlobal) SassPlugin.instance.serverName else null
+    val serverName get() = if (this.store.isGlobal) null else SassPlugin.instance.serverName
 
     override fun getIdentifier() = identifier
 
