@@ -56,7 +56,7 @@ class ChallengeImpl(
                 if (newTier == -1 && player is Player) {
                     player.sendMessage(L.Chat.challengeCompleted("name" to name))
                     // quietly, we don't want to jumpscare players
-                    player.playSound(player.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.5F, 1F)
+                    player.playSound(player.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.75F, 1F)
                 }
             }
         }
