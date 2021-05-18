@@ -65,7 +65,7 @@ class ChallengeImpl(
     private fun giveReward(tierIndex: Int, player: OfflinePlayer) {
         val reward = tiers[tierIndex].reward
         val username = player.name ?: getNameFromAshcon(player.uniqueId)
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "/stickywallet:eco add $username $reward Miles")
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "stickywallet:eco add $username $reward Miles")
         if (player is Player) {
             val tier = (tierIndex + 1).romanNumeral()
             player.sendMessage(L.Chat.tierCompleted("name" to name, "tier" to tier, "reward" to reward))
