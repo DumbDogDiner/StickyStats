@@ -31,6 +31,9 @@ repositories {
 }
 
 dependencies {
+    implementation("org.projectlombok:lombok:1.18.18")
+    annotationProcessor("org.projectlombok:lombok:1.18.18")
+
     // Require Paper, as that's the server fork we use
     compileOnly(paper())
     // Require our API
@@ -52,9 +55,6 @@ dependencies {
     // Add StickyAPI for GUI
     implementation("com.dumbdogdiner:stickyapi-bukkit:3.0.2")
     implementation("com.dumbdogdiner:stickyapi-common:3.0.2")
-
-    implementation("org.projectlombok:lombok:1.18.18")
-    annotationProcessor("org.projectlombok:lombok:1.18.18")
 }
 
 tasks {
