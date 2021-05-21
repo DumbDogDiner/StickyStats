@@ -5,6 +5,8 @@ import org.bukkit.configuration.file.YamlConfiguration
 /**
  * The language object.
  */
+// WHYYYYYYYYYYYYYY
+// I utterly hate
 object L {
     // TODO multiple language support
     internal val messageFile =

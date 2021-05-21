@@ -27,6 +27,7 @@ repositories {
     }
     // CommandAPI repo
     maven("https://raw.githubusercontent.com/JorelAli/CommandAPI/mvn-repo/")
+    mavenLocal()
 }
 
 dependencies {
@@ -51,6 +52,9 @@ dependencies {
     // Add StickyAPI for GUI
     implementation("com.dumbdogdiner:stickyapi-bukkit:3.0.2")
     implementation("com.dumbdogdiner:stickyapi-common:3.0.2")
+
+    implementation("org.projectlombok:lombok:1.18.18")
+    annotationProcessor("org.projectlombok:lombok:1.18.18")
 }
 
 tasks {
